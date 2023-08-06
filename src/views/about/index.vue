@@ -1,3 +1,3 @@
 <template>
-  <div>more-list</div>
+  <div>关于</div>
 </template>

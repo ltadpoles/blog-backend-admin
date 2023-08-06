@@ -27,8 +27,8 @@
 
 <script setup>
 import { reactive, ref } from 'vue'
-import { loginIn } from '@/api/user'
-import { useUserStore } from '@/stores/modules/user'
+// import { loginIn } from '@/api/user'
+// import { useUserStore } from '@/stores/modules/user'
 import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()
@@ -55,10 +55,10 @@ const login = async (formEl) => {
   await formEl.validate(async (valid, fields) => {
     if (valid) {
       loading.value = true
-      const { data } = await loginIn()
-      const userStore = useUserStore()
+      // const { data } = await loginIn()
+      // const userStore = useUserStore()
 
-      userStore.setToken(data)
+      // userStore.setToken(data)
 
       setTimeout(async () => {
         loading.value = false

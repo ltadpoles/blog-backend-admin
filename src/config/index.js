@@ -7,7 +7,7 @@ export const ENV = {
   // 登录页路由
   LOGIN_URL: '/login',
   // 是否通过 menu 返回动态路由,默认使用全部注册路由
-  ISASYNCROUTER: true,
+  ISASYNCROUTER: false,
   // 是否开启 token 刷新，默认不开启
   ISREFRESHTOKEN: false,
   // pinia持久化地址，可选 sessionStorage 与 localStorage

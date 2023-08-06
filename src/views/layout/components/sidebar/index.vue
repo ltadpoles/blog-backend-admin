@@ -30,6 +30,7 @@ const route = useRoute()
   .el-menu {
     border: none;
   }
+
   .menu-scrollbar {
     height: calc(100vh - 68px);
   }

@@ -37,17 +37,17 @@ router.beforeEach(async (to, from, next) => {
   }
 
   // 如果没有 token 跳转到登录页面并且携带当前页面路径
-  if (!userStore.token.token) {
-    return next({ path: ENV.LOGIN_URL, query: { redirect: to.fullPath } })
-  }
+  // if (!userStore.token.token) {
+  //   return next({ path: ENV.LOGIN_URL, query: { redirect: to.fullPath } })
+  // }
 
-  const authStore = useAuthStore()
-  // 如果没有用户菜单就再去请求一次用户信息
-  if (!authStore.menu || !authStore.menu.length) {
-    await asyncRoute()
+  // const authStore = useAuthStore()
+  // // 如果没有用户菜单就再去请求一次用户信息
+  // if (!authStore.menu || !authStore.menu.length) {
+  //   await asyncRoute()
 
-    return next({ ...to, replace: true })
-  }
+  //   return next({ ...to, replace: true })
+  // }
 
   const settingStore = useSettingStore()
   // 如果用户菜单存在，但动态路由为空
