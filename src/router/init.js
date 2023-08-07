@@ -2,11 +2,11 @@ import router from './index'
 import { ENV } from '../config'
 import { useAuthStore } from '../stores/modules/auth'
 import { useUserStore } from '../stores/modules/user'
-import { RESETSTORE } from '../stores/reset'
+// import { RESETSTORE } from '../stores/reset'
 import { filterAsyncRoutes, getRouteNameList } from './utils'
 import { notFoundRouter } from './static'
 import { useSettingStore } from '../stores/modules/setting'
-import { ElNotification } from 'element-plus'
+// import { ElNotification } from 'element-plus'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 
@@ -79,36 +79,36 @@ router.onError(error => {
 /**
  * @description 异步路由
  */
-const asyncRoute = async () => {
-  const userStore = useUserStore()
-  const authStore = useAuthStore()
+// const asyncRoute = async () => {
+//   const userStore = useUserStore()
+//   const authStore = useAuthStore()
 
-  try {
-    // 获取用户信息
-    await userStore.getInfoAction()
+//   try {
+//     // 获取用户信息
+//     await userStore.getInfoAction()
 
-    // 如果用户没有菜单
-    if (!authStore.menu.length) {
-      ElNotification({
-        title: '无权限访问',
-        message: '当前账号无任何菜单权限，请联系系统管理员！',
-        type: 'warning',
-        duration: 3000
-      })
-      RESETSTORE()
-      router.replace(ENV.LOGIN_URL)
-      return Promise.reject('用户无菜单权限')
-    }
+//     // 如果用户没有菜单
+//     if (!authStore.menu.length) {
+//       ElNotification({
+//         title: '无权限访问',
+//         message: '当前账号无任何菜单权限，请联系系统管理员！',
+//         type: 'warning',
+//         duration: 3000
+//       })
+//       RESETSTORE()
+//       router.replace(ENV.LOGIN_URL)
+//       return Promise.reject('用户无菜单权限')
+//     }
 
-    // 添加动态路由
-    setAsyncRoute(allAsyncRoutes)
-  } catch (error) {
-    // 如果获取动态路由步骤出错
-    RESETSTORE()
-    router.replace(ENV.LOGIN_URL)
-    return Promise.reject(error)
-  }
-}
+//     // 添加动态路由
+//     setAsyncRoute(allAsyncRoutes)
+//   } catch (error) {
+//     // 如果获取动态路由步骤出错
+//     RESETSTORE()
+//     router.replace(ENV.LOGIN_URL)
+//     return Promise.reject(error)
+//   }
+// }
 
 /**
  * @description 添加动态路由
