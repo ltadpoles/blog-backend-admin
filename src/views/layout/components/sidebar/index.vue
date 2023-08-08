@@ -24,35 +24,35 @@ const route = useRoute()
 const menu = [
   { path: '/dashboard', icon: 'PieChart', name: '首页', id: '01', children: [] },
   {
+    path: '/system', icon: 'Setting', name: '系统管理', id: '05', children: [
+      {
+        path: '/system/user', icon: 'User', name: '用户管理', id: '051', children: []
+      },
+    ]
+  },
+  {
     path: '/article', icon: 'Notebook', name: '文章管理', id: '02', children: [
       {
-        path: '/article/index', icon: '', name: '文章列表', id: '021', children: []
-      }
-    ]
-  },
-  {
-    path: '/tags', icon: 'PriceTag', name: '标签管理', id: '03', children: [
+        path: '/article/index', icon: 'Memo', name: '文章管理', id: '021', children: []
+      },
       {
-        path: '/tags/index', icon: '', name: '标签列表', id: '031', children: []
-      }
-    ]
-  },
-  {
-    path: '/category', icon: 'CollectionTag', name: '分类管理', id: '04', children: [
+        path: '/article/tags', icon: 'PriceTag', name: '标签管理', id: '022', children: []
+      },
       {
-        path: '/category/index', icon: '', name: '类别列表', id: '041', children: []
+        path: '/article/category', icon: 'CollectionTag', name: '类别管理', id: '023', children: []
       }
     ]
   },
+
   {
-    path: '/user', icon: 'User', name: '用户管理', id: '05', children: [
+    path: '/message', icon: 'Message', name: '消息管理', id: '03', children: [
       {
-        path: '/user/index', icon: '', name: '用户列表', id: '051', children: []
+        path: '/message/comment', icon: 'ChatDotRound', name: '留言管理', id: '031', children: []
       }
     ]
   },
   {
-    path: '/about', icon: 'Warning', name: '关于', id: '06', children: []
+    path: '/about', icon: 'Warning', name: '关于', id: '07', children: []
   }
 ]
 </script>
