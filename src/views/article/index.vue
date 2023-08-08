@@ -34,13 +34,18 @@
         <el-date-picker v-model="articleForm.date" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary">搜索</el-button>
-        <el-button type="primary" @click="onReset(articleFormRef)">重置</el-button>
-        <el-button type="primary">新增</el-button>
+        <el-button type="primary" icon="Search">搜索</el-button>
+        <el-button icon="Refresh" @click="onReset(articleFormRef)">重置</el-button>
       </el-form-item>
     </el-form>
 
+    <div class="btn-list">
+      <el-button icon="CirclePlus" type="primary">新增</el-button>
+      <el-button icon="Delete" type="danger">批量删除</el-button>
+    </div>
+
     <el-table :data="tableData" border>
+      <el-table-column type="selection" width="55" />
       <el-table-column prop="title" label="标题" />
       <el-table-column prop="author" label="作者" />
       <el-table-column prop="category" label="分类" />
@@ -89,4 +94,8 @@ const onReset = formEl => {
 
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.btn-list {
+  margin-bottom: 15px;
+}
+</style>
