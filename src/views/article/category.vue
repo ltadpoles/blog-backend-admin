@@ -32,7 +32,11 @@
       <el-table-column type="selection" width="55" />
       <el-table-column prop="name" label="名称" />
       <el-table-column prop="description" label="描述" />
-      <el-table-column prop="status" label="状态" />
+      <el-table-column prop="status" label="状态">
+        <template #default="scope">
+          {{ scope.row.status === '1' ? '启用' : '禁用' }}
+        </template>
+      </el-table-column>
       <el-table-column prop="createTime" label="创建时间" />
       <el-table-column prop="updateTime" label="更新时间" />
       <el-table-column label="操作" width="160" align="center">
@@ -66,7 +70,13 @@ let categoryForm = reactive({
   date: null
 })
 
-let tableData = ref([{}])
+let tableData = ref([{
+  name: '技术探讨',
+  description: '关于技术方面的研究',
+  status: '1',
+  createTime: '2023-08-01 13:20:39',
+  updateTime: ''
+}])
 
 const onReset = formEl => {
   if (!formEl) {

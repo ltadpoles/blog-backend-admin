@@ -49,10 +49,27 @@
       <el-table-column type="selection" width="55" />
       <el-table-column prop="title" label="标题" />
       <el-table-column prop="author" label="作者" />
-      <el-table-column prop="category" label="分类" />
-      <el-table-column prop="tags" label="标签" />
-      <el-table-column prop="type" label="创作类型" />
-      <el-table-column prop="status" label="发布状态" />
+      <el-table-column prop="tags" label="标签" align="center">
+        <template #default="scope">
+          <el-tag type="success" v-for="item in scope.row.tags.split(',')" :key="item">{{ item }}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column prop="category" label="分类">
+        <template #default="scope">
+          <el-tag v-for="item in scope.row.category.split(',')" :key="item">{{ item }}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column prop="type" label="创作类型">
+        <template #default="scope">
+          {{ scope.row.type === '1' ? '原创' : '转载' }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="status" label="发布状态">
+        <template #default="scope">
+          {{ scope.row.status === '1' ? '已发布' : '未发布' }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="link" label="原文链接" />
       <el-table-column prop="createTime" label="创建时间" />
       <el-table-column prop="updateTime" label="更新时间" />
       <el-table-column label="操作" width="180" align="center">
@@ -92,7 +109,17 @@ let articleForm = reactive({
   date: null
 })
 
-let tableData = ref([{}])
+let tableData = ref([{
+  title: '我的第一篇文章',
+  author: 'tadpole',
+  tags: 'vue',
+  category: '技术探讨',
+  type: '1',
+  status: '1',
+  link: '',
+  createTime: '2023-08-02 13:20:39',
+  updateTime: '2023-08-10 20:30:30'
+}])
 
 const onReset = formEl => {
   if (!formEl) {
