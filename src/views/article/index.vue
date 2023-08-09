@@ -79,7 +79,7 @@
 </template>
 
 <script setup>
-import { reactive, ref } from "vue";
+import { reactive, ref } from 'vue'
 
 const articleFormRef = ref(null)
 
@@ -95,7 +95,9 @@ let articleForm = reactive({
 let tableData = ref([{}])
 
 const onReset = formEl => {
-  if (!formEl) return
+  if (!formEl) {
+    return
+  }
   formEl.resetFields()
 }
 
