@@ -28,6 +28,9 @@ const menu = [
       {
         path: '/system/user', icon: 'User', name: '用户管理', id: '051', children: []
       },
+      {
+        path: '/system/role', icon: 'UserFilled', name: '角色管理', id: '052', children: []
+      },
     ]
   },
   {

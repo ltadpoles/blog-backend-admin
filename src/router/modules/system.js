@@ -15,6 +15,12 @@ const route = [
                 name: 'SystemUser',
                 meta: { title: '用户管理' },
                 component: () => import('@/views/system/user.vue')
+            },
+            {
+                path: 'role',
+                name: 'SystemRole',
+                meta: { title: '角色管理' },
+                component: () => import('@/views/system/role.vue')
             }
         ]
     }

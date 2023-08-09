@@ -28,6 +28,7 @@
           <el-option label="全部" value="" />
           <el-option label="已发布" value="1" />
           <el-option label="未发布" value="2" />
+          <el-option label="已下架" value="3" />
         </el-select>
       </el-form-item>
       <el-form-item label="创建时间" prop="date">
@@ -54,7 +55,7 @@
       <el-table-column prop="status" label="发布状态" />
       <el-table-column prop="createTime" label="创建时间" />
       <el-table-column prop="updateTime" label="更新时间" />
-      <el-table-column label="操作" width="120">
+      <el-table-column label="操作" width="180" align="center">
         <template #default>
           <el-tooltip effect="dark" content="编辑" placement="top">
             <el-button link type="primary" icon="Edit" />
@@ -64,6 +65,12 @@
           </el-tooltip>
           <el-tooltip effect="dark" content="删除" placement="top">
             <el-button link type="danger" icon="Delete" />
+          </el-tooltip>
+          <el-tooltip effect="dark" content="发布" placement="top">
+            <el-button link type="primary" icon="View" />
+          </el-tooltip>
+          <el-tooltip effect="dark" content="下架" placement="top">
+            <el-button link type="danger" icon="SwitchButton" />
           </el-tooltip>
         </template>
       </el-table-column>
