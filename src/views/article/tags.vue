@@ -22,10 +22,10 @@
 
     <div class="btn-list">
       <el-button icon="CirclePlus" type="primary" @click="addTags">新增</el-button>
-      <el-button icon="Delete" type="danger">批量删除</el-button>
+      <el-button icon="Delete" type="danger" @click="batchDel">批量删除</el-button>
     </div>
 
-    <el-table :data="tableData" border>
+    <el-table :data="tableData" border @selection-change="selectionChange">
       <el-table-column type="selection" width="55" />
       <el-table-column prop="name" label="名称" />
       <el-table-column prop="description" label="描述" />
@@ -37,30 +37,64 @@
       <el-table-column prop="createTime" label="创建时间" />
       <el-table-column prop="updateTime" label="更新时间" />
       <el-table-column label="操作" width="160" align="center">
-        <template #default>
+        <template #default="scope">
           <el-tooltip effect="dark" content="编辑" placement="top">
-            <el-button link type="primary" icon="Edit" />
+            <el-button link type="primary" icon="Edit" @click="editTags(scope.row)" />
           </el-tooltip>
-          <el-tooltip effect="dark" content="删除" placement="top">
-            <el-button link type="danger" icon="Delete" />
-          </el-tooltip>
-          <el-tooltip effect="dark" content="启用" placement="top">
-            <el-button link type="primary" icon="Unlock" />
-          </el-tooltip>
-          <el-tooltip effect="dark" content="禁用" placement="top">
-            <el-button link type="danger" icon="Lock" />
-          </el-tooltip>
+          <el-popconfirm confirm-button-text="确认"
+                         cancel-button-text="取消"
+                         icon="InfoFilled"
+                         title="确认删除?"
+                         @confirm="delConfirm(scope.row)">
+            <template #reference>
+              <span>
+                <el-tooltip effect="dark" content="删除" placement="top">
+                  <el-button link type="danger" icon="Delete" />
+                </el-tooltip>
+              </span>
+            </template>
+          </el-popconfirm>
+          <el-popconfirm confirm-button-text="确认"
+                         cancel-button-text="取消"
+                         icon="InfoFilled"
+                         title="确认启用?"
+                         @confirm="enableConfirm(scope.row)">
+            <template #reference>
+              <span>
+                <el-tooltip effect="dark" content="启用" placement="top">
+                  <el-button link type="primary" icon="Unlock" />
+                </el-tooltip>
+              </span>
+            </template>
+          </el-popconfirm>
+          <el-popconfirm confirm-button-text="确认"
+                         cancel-button-text="取消"
+                         icon="InfoFilled"
+                         title="确认禁用?"
+                         @confirm="disableConfirm(scope.row)">
+            <template #reference>
+              <span>
+                <el-tooltip effect="dark" content="禁用" placement="top">
+                  <el-button link type="danger" icon="Lock" />
+                </el-tooltip>
+              </span>
+            </template>
+          </el-popconfirm>
         </template>
       </el-table-column>
     </el-table>
 
-    <tags-edit :title="editDialogInfo.title" :isShow="editDialogInfo.isShow" @close="editDialogClose" />
+    <tags-edit :title="editDialogInfo.title"
+               :isShow="editDialogInfo.isShow"
+               :id="editDialogInfo.id"
+               @close="editDialogClose" />
   </div>
 </template>
 
 <script setup>
 import { reactive, ref } from 'vue'
 import tagsEdit from './components/tags-edit.vue'
+import { ElMessageBox, ElMessage } from 'element-plus'
 
 const tagsFormRef = ref(null)
 
@@ -78,6 +112,8 @@ let tableData = ref([{
   updateTime: ''
 }])
 
+let multipleSelection = ref([])
+
 let editDialogInfo = reactive({
   title: '新增标签',
   isShow: false
@@ -88,8 +124,64 @@ const addTags = () => {
   editDialogInfo.title = '新增标签'
 }
 
+const editTags = row => {
+  editDialogInfo.isShow = true
+  editDialogInfo.title = '修改标签'
+  editDialogInfo.id = row.id
+}
+
 const editDialogClose = val => {
   editDialogInfo.isShow = val
+}
+
+
+const batchDel = () => {
+  if (multipleSelection.value.length < 1) {
+    return ElMessage({
+      type: 'warning',
+      message: '请选择需要删除的标签'
+    })
+  }
+
+
+  ElMessageBox.confirm(
+    '确认删除选中标签？',
+    '提示',
+    {
+      confirmButtonText: '确认',
+      cancelButtonText: '取消',
+      type: 'warning',
+    }
+  )
+    .then(() => {
+      ElMessage.success('操作成功')
+    })
+}
+
+const selectionChange = val => {
+  multipleSelection.value = val
+}
+
+const delConfirm = () => {
+
+  ElMessage({
+    type: 'success',
+    message: '删除成功',
+  })
+}
+
+const enableConfirm = () => {
+  ElMessage({
+    type: 'success',
+    message: '操作成功',
+  })
+}
+
+const disableConfirm = () => {
+  ElMessage({
+    type: 'success',
+    message: '操作成功',
+  })
 }
 
 const onReset = formEl => {
@@ -103,6 +195,6 @@ const onReset = formEl => {
 
 <style lang="less" scoped>
 .btn-list {
-    margin-bottom: 15px;
+  margin-bottom: 15px;
 }
 </style>

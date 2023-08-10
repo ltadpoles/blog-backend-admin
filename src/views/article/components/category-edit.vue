@@ -1,19 +1,23 @@
 <template>
   <div>
     <v-dialog :title="title" :isShow="isShow" @close="close">
-      <el-form ref="tagsFormRef" :model="tagsForm" :rules="rules" label-width="120px" status-icon>
-        <el-form-item label="标签名称" prop="name">
-          <el-input v-model="tagsForm.name" placeholder="请输入标签名称" maxlength="10" show-word-limit />
+      <el-form ref="categoryFormRef" :model="categoryForm" :rules="rules" label-width="120px" status-icon>
+        <el-form-item label="类别名称" prop="name">
+          <el-input v-model="categoryForm.name" placeholder="请输入类别名称" maxlength="10" show-word-limit />
         </el-form-item>
         <el-form-item label="状态" prop="status">
-          <el-switch v-model="tagsForm.status" />
+          <el-switch v-model="categoryForm.status" />
         </el-form-item>
         <el-form-item label="描述" prop="desc">
-          <el-input v-model="tagsForm.desc" type="textarea" show-word-limit placeholder="请输入标签描述" maxlength="30" />
+          <el-input v-model="categoryForm.desc"
+                    type="textarea"
+                    show-word-limit
+                    placeholder="请输入类别描述"
+                    maxlength="30" />
         </el-form-item>
         <el-form-item>
-          <el-button @click="cancel(tagsFormRef)">取消</el-button>
-          <el-button type="primary" @click="submit(tagsFormRef)" :loading="loading">
+          <el-button @click="cancel(categoryFormRef)">取消</el-button>
+          <el-button type="primary" @click="submit(categoryFormRef)" :loading="loading">
             确认
           </el-button>
         </el-form-item>
@@ -36,10 +40,10 @@ defineProps({
 })
 
 const emit = defineEmits(['close'])
-const tagsFormRef = ref(null)
+const categoryFormRef = ref(null)
 
 let loading = ref(false)
-let tagsForm = reactive({
+let categoryForm = reactive({
   name: '',
   status: true,
   description: ''
@@ -47,7 +51,7 @@ let tagsForm = reactive({
 
 const rules = {
   name: [
-    { required: true, message: '请输入标签名称', trigger: 'blur' },
+    { required: true, message: '请输入类别名称', trigger: 'blur' },
   ]
 }
 

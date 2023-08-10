@@ -12,10 +12,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="创建时间" prop="date">
-        <el-date-picker v-model="categoryForm.date"
-                        type="daterange"
-                        start-placeholder="开始日期"
-                        end-placeholder="结束日期" />
+        <el-date-picker v-model="categoryForm.date" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="Search">搜索</el-button>
@@ -24,7 +21,7 @@
     </el-form>
 
     <div class="btn-list">
-      <el-button icon="CirclePlus" type="primary">新增</el-button>
+      <el-button icon="CirclePlus" type="primary" @click="addCategory">新增</el-button>
       <el-button icon="Delete" type="danger">批量删除</el-button>
     </div>
 
@@ -40,9 +37,9 @@
       <el-table-column prop="createTime" label="创建时间" />
       <el-table-column prop="updateTime" label="更新时间" />
       <el-table-column label="操作" width="160" align="center">
-        <template #default>
+        <template #default="scope">
           <el-tooltip effect="dark" content="编辑" placement="top">
-            <el-button link type="primary" icon="Edit" />
+            <el-button link type="primary" icon="Edit" @click="editCategory(scope.row)" />
           </el-tooltip>
           <el-tooltip effect="dark" content="删除" placement="top">
             <el-button link type="danger" icon="Delete" />
@@ -56,11 +53,17 @@
         </template>
       </el-table-column>
     </el-table>
+
+    <edit-dialog :isShow="editDialogInfo.isShow"
+                 :title="editDialogInfo.title"
+                 :id="editDialogInfo.id"
+                 @close="editDialogClose" />
   </div>
 </template>
 
 <script setup>
 import { reactive, ref } from 'vue'
+import editDialog from './components/category-edit.vue'
 
 const categoryFormRef = ref(null)
 
@@ -78,6 +81,11 @@ let tableData = ref([{
   updateTime: ''
 }])
 
+let editDialogInfo = reactive({
+  isShow: false,
+  title: '新增分类'
+})
+
 const onReset = formEl => {
   if (!formEl) {
     return
@@ -85,10 +93,25 @@ const onReset = formEl => {
   formEl.resetFields()
 }
 
+const addCategory = () => {
+  editDialogInfo.isShow = true
+  editDialogInfo.title = '新增分类'
+}
+
+const editCategory = row => {
+  editDialogInfo.isShow = true
+  editDialogInfo.title = '修改分类'
+  editDialogInfo.id = row.id
+}
+
+const editDialogClose = val => {
+  editDialogInfo.isShow = val
+}
+
 </script>
 
 <style lang="less" scoped>
 .btn-list {
-    margin-bottom: 15px;
+  margin-bottom: 15px;
 }
 </style>
