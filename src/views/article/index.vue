@@ -41,7 +41,7 @@
     </el-form>
 
     <div class="btn-list">
-      <el-button icon="CirclePlus" type="primary">新增</el-button>
+      <el-button icon="CirclePlus" type="primary" @click="addArticle">新增</el-button>
       <el-button icon="Delete" type="danger">批量删除</el-button>
     </div>
 
@@ -92,13 +92,22 @@
         </template>
       </el-table-column>
     </el-table>
+
+    <edit-dialog :isShow="editDialogInfo.isShow" :title="editDialogInfo.title" @close="editClose" />
   </div>
 </template>
 
 <script setup>
 import { reactive, ref } from 'vue'
+import editDialog from './components/article-edit.vue'
 
 const articleFormRef = ref(null)
+
+const editDialogInfo = reactive({
+  isShow: false,
+  title: '新增文章',
+  type: '0'
+})
 
 let articleForm = reactive({
   name: '',
@@ -126,6 +135,16 @@ const onReset = formEl => {
     return
   }
   formEl.resetFields()
+}
+
+const addArticle = () => {
+  editDialogInfo.isShow = true
+  editDialogInfo.title = '新增文章'
+  editDialogInfo.type = '0'
+}
+
+const editClose = val => {
+  editDialogInfo.isShow = val
 }
 
 </script>

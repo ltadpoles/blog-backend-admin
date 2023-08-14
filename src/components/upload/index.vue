@@ -1,27 +1,9 @@
 <template>
-  <el-upload ref="elUpload"
-             :file-list="fileList"
-             :action="action"
-             :headers="headers"
-             :disabled="disabled"
-             :multiple="multiple"
-             :data="data"
-             :name="name"
-             :accept="accept"
-             :fileSize="fileSize"
-             :limit="limit"
-             :list-type="listLocalType"
-             :drag="drag"
-             :show-file-list="isShowFileList"
-             :on-preview="onPreview"
-             :on-remove="onRemove"
-             :before-remove="beforeRemove"
-             :before-upload="beforeUpload"
-             :on-success="onSuccess"
-             :on-error="onError"
-             :on-progress="onProgress"
-             :on-exceed="onExceed"
-             :on-change="onChange">
+  <el-upload ref="elUpload" :file-list="fileList" :action="action" :headers="headers" :disabled="disabled"
+    :multiple="multiple" :data="data" :name="name" :accept="accept" :fileSize="fileSize" :limit="limit"
+    :list-type="listLocalType" :drag="drag" :show-file-list="isShowFileList" :on-preview="onPreview" :on-remove="onRemove"
+    :before-remove="beforeRemove" :before-upload="beforeUpload" :on-success="onSuccess" :on-error="onError"
+    :on-progress="onProgress" :on-exceed="onExceed" :on-change="onChange" :class="className">
     <template v-if="!drag">
       <el-button type="primary" v-if="listLocalType === 'text' || listLocalType === 'picture'">{{ btnText }}</el-button>
       <el-icon v-else>
@@ -144,6 +126,11 @@ const props = defineProps({
   },
   onProgress: {
     type: Function
+  },
+  // 自定义类名
+  className: {
+    type: String,
+    default: ''
   }
 })
 
