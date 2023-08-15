@@ -8,7 +8,7 @@
             <el-input v-model="info.title" placeholder="请输入标题" maxlength="30" show-word-limit clearable />
           </div>
           <div class="article-flex margin-b10">
-            <div class="article-flex">
+            <div class="article-flex margin-r10">
               <span class="article-item-title">标签：</span>
               <el-tag class="margin-r10" closable type="success" v-for="item in tags" :key="item" @close="tagClose">{{
                 item
@@ -24,14 +24,14 @@
           </div>
 
           <div class="article-flex margin-b10">
-            <div class="article-flex">
+            <div class="article-flex margin-r10">
               <span class="article-item-title">创作类型：</span>
               <el-select v-model="info.type" clearable placeholder="请选择创作类型">
                 <el-option label="原创" value="1" />
                 <el-option label="转载" value="2" />
               </el-select>
             </div>
-            <div class="article-flex">
+            <div class="article-flex ">
               <span class="article-item-title">原文链接：</span>
               <el-input v-model="info.link" placeholder="请输入原文链接" clearable />
             </div>
@@ -39,16 +39,24 @@
         </div>
         <div class="article-edit-head-right article-flex">
           <span class="article-item-title">标题图：</span>
-          <v-upload className="upload-sty" limit="1" list-type="picture-card" :isShowFileList="false" />
+          <v-upload className="upload-sty" :limit="1" list-type="picture-card" :isShowFileList="false" />
         </div>
       </div>
 
+      <div class="article-editor">
+        <v-md-editor v-model="text" :height="editorHeight" @save="save"></v-md-editor>
+      </div>
 
+      <div class="article-edit-footer">
+        <el-button>取消</el-button>
+        <el-button type="primary" @click="submit">保存</el-button>
+        <el-button type="primary" @click="publish">发布</el-button>
+      </div>
     </div>
   </v-dialog>
 </template>
 <script setup>
-import { reactive, ref } from "vue";
+import { onMounted, reactive, ref } from "vue";
 import vDialog from '@/components/dialog/index.vue'
 import vUpload from '@/components/upload/index.vue'
 
@@ -69,6 +77,10 @@ const emit = defineEmits(['close'])
 let tags = ref(['vue', 'javaScript'])
 let categorys = ref(['技术研究'])
 
+let editorHeight = ref('400px')
+
+let text = ref('')
+
 const close = () => {
   emit('close', false)
 }
@@ -80,6 +92,25 @@ const info = reactive({
 const tagClose = () => { }
 
 const categoryClose = () => { }
+
+const save = (val, html) => {
+  // return html
+  return new Promise((reslove) => {
+    reslove(html)
+  })
+}
+
+const submit = async () => {
+  let a = await save()
+
+  console.log(a)
+}
+
+const publish = () => { }
+
+onMounted(() => {
+  editorHeight.value = (document.documentElement.clientHeight - 320) + 'px'
+})
 </script>
 <style lang="less" scoped>
 .article-edit {
@@ -97,7 +128,8 @@ const categoryClose = () => { }
     align-items: center;
 
     .article-item-title {
-      min-width: 92px;
+      min-width: 72px;
+      width: 72px;
       text-align: right;
     }
   }
@@ -118,6 +150,15 @@ const categoryClose = () => { }
 
   .el-upload--picture-card {
     height: 100px;
+  }
+
+  .article-editor {
+    margin-top: 20px;
+  }
+
+  .article-edit-footer {
+    text-align: center;
+    margin-top: 32px;
   }
 }
 </style>
