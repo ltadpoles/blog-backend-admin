@@ -94,16 +94,10 @@ const tagClose = () => { }
 const categoryClose = () => { }
 
 const save = (val, html) => {
-  // return html
-  return new Promise((reslove) => {
-    reslove(html)
-  })
+
 }
 
-const submit = async () => {
-  let a = await save()
-
-  console.log(a)
+const submit = () => {
 }
 
 const publish = () => { }

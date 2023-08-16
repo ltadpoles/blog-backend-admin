@@ -47,7 +47,11 @@
 
     <el-table :data="tableData" border>
       <el-table-column type="selection" width="55" />
-      <el-table-column prop="title" label="标题" />
+      <el-table-column prop="title" label="标题">
+        <template #default="scope">
+          <el-button link type="primary" size="small" @click="getArticleInfo(scope.row)">{{ scope.row.title }}</el-button>
+        </template>
+      </el-table-column>
       <el-table-column prop="author" label="作者" />
       <el-table-column prop="tags" label="标签" align="center">
         <template #default="scope">
@@ -93,6 +97,7 @@
       </el-table-column>
     </el-table>
 
+    <info-dialog :isShow="infoDialogInfo.isShow" :title="infoDialogInfo.title" @close="infoClose" />
     <edit-dialog :isShow="editDialogInfo.isShow" :title="editDialogInfo.title" @close="editClose" />
   </div>
 </template>
@@ -100,6 +105,7 @@
 <script setup>
 import { reactive, ref } from 'vue'
 import editDialog from './components/article-edit.vue'
+import infoDialog from './components/article-info.vue'
 
 const articleFormRef = ref(null)
 
@@ -107,6 +113,10 @@ const editDialogInfo = reactive({
   isShow: false,
   title: '新增文章',
   type: '0'
+})
+
+const infoDialogInfo = reactive({
+  isShow: false
 })
 
 let articleForm = reactive({
@@ -143,8 +153,18 @@ const addArticle = () => {
   editDialogInfo.type = '0'
 }
 
+const getArticleInfo = row => {
+  infoDialogInfo.isShow = true
+  infoDialogInfo.title = row.title
+  console.log(row)
+}
+
 const editClose = val => {
   editDialogInfo.isShow = val
+}
+
+const infoClose = val => {
+  infoDialogInfo.isShow = val
 }
 
 </script>
