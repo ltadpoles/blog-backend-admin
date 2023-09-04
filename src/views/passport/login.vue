@@ -31,6 +31,7 @@ import { loginIn } from '@/api/user'
 import sha256 from 'crypto-js/sha256'
 import { useUserStore } from '@/stores/modules/user'
 import { useRouter, useRoute } from 'vue-router'
+import { getUserInfo } from '../../api/user'
 
 const router = useRouter()
 const route = useRoute()
@@ -59,9 +60,11 @@ const login = async (formEl) => {
       loginIn({
         username: loginForm.username,
         password: sha256(loginForm.password).toString()
-      }).then(data => {
+      }).then(async res => {
         const userStore = useUserStore()
-        userStore.setToken(data.data.data)
+        userStore.setToken(res.data.data)
+        // const { data } = await getUserInfo()
+        // console.log(data)
         router.replace(route.query.redirect || '/')
       }).finally(() => {
         loading.value = false

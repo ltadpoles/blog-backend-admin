@@ -15,8 +15,8 @@
     <div class="header-right">
       <el-dropdown trigger="click" @command="handleMenuClick">
         <span class="header-right-user cursor-icon">
-          <el-avatar :size="28" :src="circleUrl" />
-          &nbsp; 游荡de蝌蚪
+          <el-avatar :size="28" :src="userStore.userInfo.avatar || circleUrl" />
+          &nbsp; {{ userStore.userInfo.name || userStore.userInfo.username }}
         </span>
         <template #dropdown>
           <el-dropdown-menu>
@@ -62,14 +62,16 @@
 
 <script setup>
 import { useSettingStore } from '@/stores/modules/setting'
+import { useUserStore } from '@/stores/modules/user'
 import { useRouter } from 'vue-router'
 import { ref, reactive } from 'vue'
 import vBreadcrumb from '@/components/breadcrumb/index.vue'
 import { RESETSTORE } from '@/stores/reset'
 import { ElMessage } from 'element-plus'
-const settingStore = useSettingStore()
-const router = useRouter()
 
+const settingStore = useSettingStore()
+const userStore = useUserStore()
+const router = useRouter()
 const themeConfig = reactive({
   drawer: false,
   theme: false, // 暗黑模式
