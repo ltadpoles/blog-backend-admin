@@ -7,8 +7,8 @@
       <div class="login-content-form">
         <h1>后台管理系统</h1>
         <el-form ref="loginFormRef" :model="loginForm" :rules="rules" class="demo-loginForm" status-icon>
-          <el-form-item label="" prop="name">
-            <el-input v-model="loginForm.name" placeholder="请输入账号" prefix-icon="User" />
+          <el-form-item label="" prop="username">
+            <el-input v-model="loginForm.username" placeholder="请输入账号" prefix-icon="User" />
           </el-form-item>
           <el-form-item label="" prop="password">
             <el-input v-model="loginForm.password" placeholder="请输入密码" type="password" prefix-icon="Lock" />
@@ -27,8 +27,9 @@
 
 <script setup>
 import { reactive, ref } from 'vue'
-// import { loginIn } from '@/api/user'
-// import { useUserStore } from '@/stores/modules/user'
+import { loginIn } from '@/api/user'
+import sha256 from 'crypto-js/sha256'
+import { useUserStore } from '@/stores/modules/user'
 import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()
@@ -43,7 +44,7 @@ const loginForm = reactive({
 })
 
 const rules = ref({
-  name: [{ required: true, message: '请输入账号', trigger: 'blur' }],
+  username: [{ required: true, message: '请输入账号', trigger: 'blur' }],
   password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
 })
 
@@ -55,15 +56,16 @@ const login = async (formEl) => {
   await formEl.validate(async (valid, fields) => {
     if (valid) {
       loading.value = true
-      // const { data } = await loginIn()
-      // const userStore = useUserStore()
-
-      // userStore.setToken(data)
-
-      setTimeout(async () => {
+      loginIn({
+        username: loginForm.username,
+        password: sha256(loginForm.password).toString()
+      }).then(data => {
+        const userStore = useUserStore()
+        userStore.setToken(data.data.data)
+        router.replace(route.query.redirect || '/')
+      }).finally(() => {
         loading.value = false
-        await router.replace(route.query.redirect || '/')
-      }, 1000)
+      })
     } else {
       Promise.reject(fields)
     }

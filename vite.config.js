@@ -39,10 +39,10 @@ export default defineConfig({
   server: {
     // 代理
     proxy: {
-      '/api': {
-        target: 'https://run.mocky.io',
+      '/v1': {
+        target: 'http://127.0.0.1:3000',
         changeOrigin: true,
-        rewrite: path => path.replace(/^\/api/, '')
+        rewrite: path => path.replace(/^\/v1/, '')
       }
     }
   }

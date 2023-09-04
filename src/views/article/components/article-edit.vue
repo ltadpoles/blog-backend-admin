@@ -10,15 +10,23 @@
           <div class="article-flex margin-b10">
             <div class="article-flex margin-r10">
               <span class="article-item-title">标签：</span>
-              <el-tag class="margin-r10" closable type="success" v-for="item in tags" :key="item" @close="tagClose">{{
-                item
-              }}</el-tag>
+              <el-tag class="margin-r10"
+                      closable
+                      type="success"
+                      v-for="item in tags"
+                      :key="item"
+                      @close="tagClose">{{
+                        item
+                      }}</el-tag>
               <el-button type="success" plain size="small">添加标签</el-button>
             </div>
             <div class="article-flex">
               <span class="article-item-title">分类：</span>
-              <el-tag class="margin-r10" closable v-for="item in categorys" :key="item"
-                @close="categoryClose">item</el-tag>
+              <el-tag class="margin-r10"
+                      closable
+                      v-for="item in categorys"
+                      :key="item"
+                      @close="categoryClose">item</el-tag>
               <el-button plain size="small">添加分类</el-button>
             </div>
           </div>
@@ -44,7 +52,7 @@
       </div>
 
       <div class="article-editor">
-        <v-md-editor v-model="text" :height="editorHeight" @save="save"></v-md-editor>
+        <v-md-editor v-model="text" :height="editorHeight" @save="save"/>
       </div>
 
       <div class="article-edit-footer">
@@ -56,7 +64,7 @@
   </v-dialog>
 </template>
 <script setup>
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, reactive, ref } from 'vue'
 import vDialog from '@/components/dialog/index.vue'
 import vUpload from '@/components/upload/index.vue'
 
@@ -103,7 +111,7 @@ const submit = () => {
 const publish = () => { }
 
 onMounted(() => {
-  editorHeight.value = (document.documentElement.clientHeight - 320) + 'px'
+  editorHeight.value = document.documentElement.clientHeight - 320 + 'px'
 })
 </script>
 <style lang="less" scoped>

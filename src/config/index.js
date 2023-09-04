@@ -11,5 +11,7 @@ export const ENV = {
   // 是否开启 token 刷新，默认不开启
   ISREFRESHTOKEN: false,
   // pinia持久化地址，可选 sessionStorage 与 localStorage
-  PINIASTORY: sessionStorage
+  PINIASTORY: sessionStorage,
+  //
+  TARGETURL: '/v1'
 }
