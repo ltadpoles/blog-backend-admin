@@ -81,6 +81,6 @@ const onReset = formEl => {
 
 <style lang="less" scoped>
 .btn-list {
-    margin-bottom: 15px;
+  margin-bottom: 15px;
 }
 </style>

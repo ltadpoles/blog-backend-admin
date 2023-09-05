@@ -106,7 +106,7 @@ const asyncRoute = async () => {
     // }
 
     // 添加动态路由
-    // setAsyncRoute(allAsyncRoutes)
+    setAsyncRoute(allAsyncRoutes)
   } catch (error) {
     // 如果获取动态路由步骤出错
     RESETSTORE()

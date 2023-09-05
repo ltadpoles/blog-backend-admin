@@ -20,7 +20,6 @@ export const useUserStore = defineStore('userStore', {
     },
     async getInfoAction() {
       const { data } = await getUserInfo()
-      // const { avatar, name } = data
       // const authStore = useAuthStore()
       // 设置用户信息
       this.setUserInfo(data.data)

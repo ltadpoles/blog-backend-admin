@@ -20,7 +20,7 @@
         </span>
         <template #dropdown>
           <el-dropdown-menu>
-            <el-dropdown-item command="/dashboard">
+            <el-dropdown-item command="/about/index">
               <el-icon>
                 <User />
               </el-icon>
