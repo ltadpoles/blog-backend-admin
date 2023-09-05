@@ -31,7 +31,6 @@ import { loginIn } from '@/api/user'
 import sha256 from 'crypto-js/sha256'
 import { useUserStore } from '@/stores/modules/user'
 import { useRouter, useRoute } from 'vue-router'
-import { getUserInfo } from '../../api/user'
 
 const router = useRouter()
 const route = useRoute()

@@ -1,7 +1,7 @@
 <template>
   <div class="about">
     <div class="avator">
-      <img :src="userInfo.avatar" alt="头像">
+      <img :src="userInfo.avatar" alt="头像" />
     </div>
     <div class="user-info">
       <div class="user-info-item">
@@ -37,18 +37,20 @@
 </template>
 
 <script setup>
-import { useUserStore } from '../../stores/modules/user';
+import { useUserStore } from '../../stores/modules/user'
 const userStore = useUserStore()
 const { userInfo } = userStore
 
 const getState = (state) => {
   switch (state) {
-    case 0:
-      return '超级管理员';
-    case 1:
-      return '管理员';
-    case 2:
-      return '用户'
+  case 0:
+    return '超级管理员'
+  case 1:
+    return '管理员'
+  case 2:
+    return '用户'
+  default:
+    return '未知用户'
   }
 }
 </script>

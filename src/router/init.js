@@ -86,7 +86,7 @@ router.onError(error => {
  */
 const asyncRoute = async () => {
   const userStore = useUserStore()
-  const authStore = useAuthStore()
+  // const authStore = useAuthStore()
 
   try {
     // 获取用户信息

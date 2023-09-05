@@ -1,21 +1,21 @@
 <template>
   <div class="user">
     <el-form ref="userFormRef" :inline="true" :model="userForm">
-      <el-form-item label="用户名" prop="userName">
-        <el-input v-model="userForm.userName" placeholder="请输入用户名" clearable />
+      <el-form-item label="用户名" prop="username">
+        <el-input v-model="userForm.username" placeholder="请输入用户名" clearable />
       </el-form-item>
       <el-form-item label="昵称" prop="name">
         <el-input v-model="userForm.name" placeholder="请输入昵称" clearable />
       </el-form-item>
-      <el-form-item label="状态" prop="status">
+      <!-- <el-form-item label="状态" prop="status">
         <el-select v-model="userForm.status" placeholder="请选择状态" clearable>
           <el-option label="全部" value="" />
           <el-option label="启用" value="1" />
           <el-option label="禁用" value="2" />
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item>
-        <el-button type="primary" icon="Search">搜索</el-button>
+        <el-button type="primary" icon="Search" @click="search">搜索</el-button>
         <el-button icon="Refresh" @click="onReset(userFormRef)">重置</el-button>
       </el-form-item>
     </el-form>
@@ -27,16 +27,23 @@
 
     <el-table :data="tableData" border>
       <el-table-column type="selection" width="55" />
-      <el-table-column prop="avatar" label="头像" />
-      <el-table-column prop="userName" label="用户名" />
+      <el-table-column prop="avatar" label="头像" align="center">
+        <template #default="scope">
+          <img class="list-avatar" :src="scope.row.avatar" alt="" />
+        </template>
+      </el-table-column>
+      <el-table-column prop="username" label="用户名" />
       <el-table-column prop="name" label="昵称" />
       <el-table-column prop="phone" label="手机号" />
       <el-table-column prop="email" label="邮箱" />
-      <el-table-column prop="sex" label="性别" />
-      <el-table-column prop="userRole" label="用户角色" />
-      <el-table-column prop="status" label="状态" />
-      <el-table-column prop="creatTime" label="注册时间" />
-      <el-table-column prop="endTime" label="过期时间" />
+      <el-table-column prop="sex" label="性别">
+        <template #default="scope">
+          {{ scope.row.sex === 1 ? '男' : '女' }}
+        </template>
+      </el-table-column>
+      <!-- <el-table-column prop="userRole" label="用户角色" /> -->
+      <!-- <el-table-column prop="status" label="状态" /> -->
+      <el-table-column prop="createTime" label="注册时间" />
       <el-table-column label="操作" width="160" align="center">
         <template #default>
           <el-tooltip effect="dark" content="编辑" placement="top">
@@ -54,33 +61,88 @@
         </template>
       </el-table-column>
     </el-table>
+
+    <div class="pagination">
+      <el-pagination v-model:current-page="page.currentPage"
+                     v-model:page-size="query.pageSize"
+                     size="small"
+                     layout="total, prev, pager, next"
+                     :total="page.total"
+                     @current-change="currentChange" />
+    </div>
   </div>
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
+import { userList } from '../../api/user'
 
 const userFormRef = ref(null)
 
 let userForm = reactive({
   name: '',
-  userName: '',
-  status: ''
+  username: '',
 })
 
-let tableData = ref([{}])
+let query = reactive({
+  pageSize: 10,
+  pageNum: 1,
+  param: {}
+})
+
+let page = reactive({
+  total: 0,
+  currentPage: 1
+})
+
+let tableData = ref([])
 
 const onReset = formEl => {
   if (!formEl) {
     return
   }
   formEl.resetFields()
+  page.currentPage = 1
+  query.param = {}
+  getUserList(query)
 }
+
+const getUserList = async query => {
+  let { data } = await userList(query)
+  tableData.value = data.data.list
+  page.total = data.data.total
+}
+
+const search = () => {
+  query.param = userForm
+  getUserList(query)
+}
+
+const currentChange = (page) => {
+  query.pageNum = page
+  getUserList(query)
+}
+
+onMounted(() => {
+  getUserList(query)
+})
 
 </script>
 
 <style lang="less" scoped>
 .btn-list {
   margin-bottom: 15px;
+}
+
+.list-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 100%;
+}
+
+.pagination {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
 }
 </style>
