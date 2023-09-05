@@ -43,7 +43,11 @@
       </el-table-column>
       <!-- <el-table-column prop="userRole" label="用户角色" /> -->
       <!-- <el-table-column prop="status" label="状态" /> -->
-      <el-table-column prop="createTime" label="注册时间" />
+      <el-table-column prop="createTime" label="注册时间">
+        <template #default="scope">
+          {{ dayjs(scope.row.createTime).format('YYYY-MM-DD HH:mm') }}
+        </template>
+      </el-table-column>
       <el-table-column label="操作" width="160" align="center">
         <template #default>
           <el-tooltip effect="dark" content="编辑" placement="top">
@@ -63,12 +67,8 @@
     </el-table>
 
     <div class="pagination">
-      <el-pagination v-model:current-page="page.currentPage"
-                     v-model:page-size="query.pageSize"
-                     size="small"
-                     layout="total, prev, pager, next"
-                     :total="page.total"
-                     @current-change="currentChange" />
+      <el-pagination v-model:current-page="page.currentPage" v-model:page-size="query.pageSize" size="small"
+        layout="total, prev, pager, next" :total="page.total" @current-change="currentChange" />
     </div>
   </div>
 </template>
@@ -76,6 +76,7 @@
 <script setup>
 import { onMounted, reactive, ref } from 'vue'
 import { userList } from '../../api/user'
+import { dayjs } from 'element-plus';
 
 const userFormRef = ref(null)
 

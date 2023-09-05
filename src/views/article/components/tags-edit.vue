@@ -8,8 +8,8 @@
         <el-form-item label="状态" prop="status">
           <el-switch v-model="tagsForm.status" />
         </el-form-item>
-        <el-form-item label="描述" prop="desc">
-          <el-input v-model="tagsForm.desc" type="textarea" show-word-limit placeholder="请输入标签描述" maxlength="30" />
+        <el-form-item label="描述" prop="description">
+          <el-input v-model="tagsForm.description" type="textarea" show-word-limit placeholder="请输入标签描述" maxlength="30" />
         </el-form-item>
         <el-form-item>
           <el-button @click="cancel(tagsFormRef)">取消</el-button>
@@ -25,6 +25,7 @@
 import vDialog from '@/components/dialog/index.vue'
 import { reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
+import { tagAdd } from '@/api/tags'
 
 defineProps({
   title: String,
@@ -70,14 +71,15 @@ const submit = async (formEl) => {
   await formEl.validate((valid, fields) => {
     if (valid) {
       loading.value = true
-      setTimeout(() => {
+      tagAdd({ ...tagsForm, status: tagsForm.status ? 1 : 0 }).then(res => {
         ElMessage({
           message: '操作成功',
           type: 'success',
         })
+        close(true)
+      }).finally(() => {
         loading.value = false
-        close()
-      }, 3000)
+      })
     } else {
       Promise.reject(fields)
     }

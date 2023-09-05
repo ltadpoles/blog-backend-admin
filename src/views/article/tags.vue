@@ -31,21 +31,26 @@
       <el-table-column prop="description" label="描述" />
       <el-table-column prop="status" label="状态">
         <template #default="scope">
-          {{ scope.row.status === '1' ? '启用' : '禁用' }}
+          {{ scope.row.status === 1 ? '启用' : '禁用' }}
         </template>
       </el-table-column>
-      <el-table-column prop="createTime" label="创建时间" />
-      <el-table-column prop="updateTime" label="更新时间" />
+      <el-table-column prop="createTime" label="创建时间">
+        <template #default="scope">
+          {{ dayjs(scope.row.createTime).format('YYYY-MM-DD HH:mm') }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="updateTime" label="更新时间">
+        <template #default="scope">
+          {{ scope.row.updateTime ? dayjs(scope.row.updateTime).format('YYYY-MM-DD HH:mm') : '' }}
+        </template>
+      </el-table-column>
       <el-table-column label="操作" width="160" align="center">
         <template #default="scope">
           <el-tooltip effect="dark" content="编辑" placement="top">
             <el-button link type="primary" icon="Edit" @click="editTags(scope.row)" />
           </el-tooltip>
-          <el-popconfirm confirm-button-text="确认"
-                         cancel-button-text="取消"
-                         icon="InfoFilled"
-                         title="确认删除?"
-                         @confirm="delConfirm(scope.row)">
+          <el-popconfirm confirm-button-text="确认" cancel-button-text="取消" icon="InfoFilled" title="确认删除?"
+            @confirm="delConfirm(scope.row)">
             <template #reference>
               <span>
                 <el-tooltip effect="dark" content="删除" placement="top">
@@ -54,11 +59,8 @@
               </span>
             </template>
           </el-popconfirm>
-          <el-popconfirm confirm-button-text="确认"
-                         cancel-button-text="取消"
-                         icon="InfoFilled"
-                         title="确认启用?"
-                         @confirm="enableConfirm(scope.row)">
+          <el-popconfirm confirm-button-text="确认" cancel-button-text="取消" icon="InfoFilled" title="确认启用?"
+            @confirm="enableConfirm(scope.row)">
             <template #reference>
               <span>
                 <el-tooltip effect="dark" content="启用" placement="top">
@@ -67,11 +69,8 @@
               </span>
             </template>
           </el-popconfirm>
-          <el-popconfirm confirm-button-text="确认"
-                         cancel-button-text="取消"
-                         icon="InfoFilled"
-                         title="确认禁用?"
-                         @confirm="disableConfirm(scope.row)">
+          <el-popconfirm confirm-button-text="确认" cancel-button-text="取消" icon="InfoFilled" title="确认禁用?"
+            @confirm="disableConfirm(scope.row)">
             <template #reference>
               <span>
                 <el-tooltip effect="dark" content="禁用" placement="top">
@@ -84,17 +83,17 @@
       </el-table-column>
     </el-table>
 
-    <tags-edit :title="editDialogInfo.title"
-               :isShow="editDialogInfo.isShow"
-               :id="editDialogInfo.id"
-               @close="editDialogClose" />
+    <tags-edit :title="editDialogInfo.title" :isShow="editDialogInfo.isShow" :id="editDialogInfo.id"
+      @close="editDialogClose" />
   </div>
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import tagsEdit from './components/tags-edit.vue'
 import { ElMessageBox, ElMessage } from 'element-plus'
+import { tagList } from '@/api/tags'
+import { dayjs } from 'element-plus'
 
 const tagsFormRef = ref(null)
 
@@ -104,13 +103,13 @@ let tagsForm = reactive({
   date: null
 })
 
-let tableData = ref([{
-  name: 'vue',
-  description: '一个前端框架',
-  status: '1',
-  createTime: '2023-08-02 12:39:20',
-  updateTime: ''
-}])
+let query = reactive({
+  pageSize: 10,
+  pageNum: 1,
+  param: {}
+})
+
+let tableData = ref([])
 
 let multipleSelection = ref([])
 
@@ -118,6 +117,11 @@ let editDialogInfo = reactive({
   title: '新增标签',
   isShow: false
 })
+
+const getTagsList = async query => {
+  const { data } = await tagList(query)
+  tableData.value = data.data.list
+}
 
 const addTags = () => {
   editDialogInfo.isShow = true
@@ -131,7 +135,10 @@ const editTags = row => {
 }
 
 const editDialogClose = val => {
-  editDialogInfo.isShow = val
+  editDialogInfo.isShow = false
+  if (val) {
+    console.log(true, 111)
+  }
 }
 
 
@@ -190,6 +197,10 @@ const onReset = formEl => {
   }
   formEl.resetFields()
 }
+
+onMounted(() => {
+  getTagsList(query)
+})
 
 </script>
 
