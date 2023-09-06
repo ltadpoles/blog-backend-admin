@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-dialog :title="title" :isShow="isShow" @close="close">
+    <v-dialog :title="title" :isShow="isShow" @close="close" @open="open">
       <el-form ref="tagsFormRef" :model="tagsForm" :rules="rules" label-width="120px" status-icon>
         <el-form-item label="标签名称" prop="name">
           <el-input v-model="tagsForm.name" placeholder="请输入标签名称" maxlength="10" show-word-limit />
@@ -27,9 +27,9 @@ import { reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { tagAdd } from '@/api/tags'
 
-defineProps({
+const props = defineProps({
   title: String,
-  id: String,
+  info: Object,
   isShow: {
     type: Boolean,
     default: false
@@ -56,6 +56,17 @@ const close = val => {
   emit('close', val)
 }
 
+const open = () => {
+  console.log(props.info)
+  if (props.info.name) {
+    tagsForm = Object.assign(tagsForm, props.info)
+    tagsForm.status = props.info.status ? true : false
+  } else {
+    tagsFormRef.value.resetFields()
+  }
+
+}
+
 const cancel = formEl => {
   if (!formEl) {
     return
@@ -77,6 +88,7 @@ const submit = async (formEl) => {
           type: 'success',
         })
         close(true)
+        formEl.resetFields()
       }).finally(() => {
         loading.value = false
       })

@@ -1,25 +1,14 @@
 <template>
-  <el-dialog
-    v-model="dialogVisible"
-    :title="title"
-    :width="width"
-    :fullscreen="fullscreen"
-    :modal="modal"
-    :close-on-click-modal="closeOnClickModal"
-    :close-on-press-escape="closeOnPressEscape"
-    :show-close="showClose"
-    :before-close="beforeClose"
-    center
-    destroy-on-close
-    @close="close"
-  >
-    <slot ></slot>
+  <el-dialog v-model="dialogVisible" :title="title" :width="width" :fullscreen="fullscreen" :modal="modal"
+    :close-on-click-modal="closeOnClickModal" :close-on-press-escape="closeOnPressEscape" :show-close="showClose"
+    :before-close="beforeClose" center destroy-on-close @close="close" @open="open">
+    <slot></slot>
   </el-dialog>
 </template>
 
 <script setup>
 import { watch, ref } from 'vue'
-import {ElMessageBox} from 'element-plus'
+import { ElMessageBox } from 'element-plus'
 
 const dialogVisible = ref(false)
 
@@ -72,7 +61,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['close'])
+const emit = defineEmits(['close', 'open'])
 
 // props 不支持 v-modal 绑定的值，所以这里使用 watch 的方式添加一个变量
 watch(
@@ -102,5 +91,9 @@ const beforeClose = done => {
 
 const close = () => {
   emit('close', false)
+}
+
+const open = () => {
+  emit('open')
 }
 </script>

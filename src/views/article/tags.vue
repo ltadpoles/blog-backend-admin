@@ -8,14 +8,14 @@
         <el-select v-model="tagsForm.status" placeholder="请选择状态" clearable>
           <el-option label="全部" value="" />
           <el-option label="启用" value="1" />
-          <el-option label="禁用" value="2" />
+          <el-option label="禁用" value="0" />
         </el-select>
       </el-form-item>
       <el-form-item label="创建时间" prop="date">
-        <el-date-picker v-model="tagsForm.date" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" />
+        <el-date-picker v-model="tagsForm.date" type="datetimerange" start-placeholder="开始日期" end-placeholder="结束日期" />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="Search">搜索</el-button>
+        <el-button type="primary" icon="Search" @click="search(tagsForm)">搜索</el-button>
         <el-button icon="Refresh" @click="onReset(tagsFormRef)">重置</el-button>
       </el-form-item>
     </el-form>
@@ -83,7 +83,12 @@
       </el-table-column>
     </el-table>
 
-    <tags-edit :title="editDialogInfo.title" :isShow="editDialogInfo.isShow" :id="editDialogInfo.id"
+    <div class="pagination">
+      <el-pagination v-model:current-page="page.currentPage" v-model:page-size="query.pageSize" size="small"
+        layout="total, prev, pager, next" :total="page.total" @current-change="currentChange" />
+    </div>
+
+    <tags-edit :title="editDialogInfo.title" :isShow="editDialogInfo.isShow" :info="editDialogInfo.info"
       @close="editDialogClose" />
   </div>
 </template>
@@ -109,6 +114,11 @@ let query = reactive({
   param: {}
 })
 
+let page = reactive({
+  total: 0,
+  currentPage: 1
+})
+
 let tableData = ref([])
 
 let multipleSelection = ref([])
@@ -121,23 +131,45 @@ let editDialogInfo = reactive({
 const getTagsList = async query => {
   const { data } = await tagList(query)
   tableData.value = data.data.list
+  page.total = data.data.total
+}
+
+const search = param => {
+  let startTime = null
+  let endTime = null
+  if (param.date && param.date.length) {
+    startTime = new Date(param.date[0]).getTime()
+    endTime = new Date(param.date[1]).getTime()
+  }
+  query.param = Object.assign(query.param, param, { startTime, endTime })
+  query.pageNum = 1
+  page.currentPage = 1
+  getTagsList(query)
+}
+
+const currentChange = (page) => {
+  query.pageNum = page
+  getTagsList(query)
 }
 
 const addTags = () => {
   editDialogInfo.isShow = true
   editDialogInfo.title = '新增标签'
+  editDialogInfo.info = {}
 }
 
 const editTags = row => {
   editDialogInfo.isShow = true
   editDialogInfo.title = '修改标签'
-  editDialogInfo.id = row.id
+  editDialogInfo.info = JSON.parse(JSON.stringify(row))
 }
 
 const editDialogClose = val => {
   editDialogInfo.isShow = false
   if (val) {
     console.log(true, 111)
+    query.pageNum = 1
+    getTagsList(query)
   }
 }
 
@@ -196,6 +228,10 @@ const onReset = formEl => {
     return
   }
   formEl.resetFields()
+  query.pageNum = 1
+  query.param = {}
+  page.currentPage = 1
+  getTagsList(query)
 }
 
 onMounted(() => {
@@ -207,5 +243,11 @@ onMounted(() => {
 <style lang="less" scoped>
 .btn-list {
   margin-bottom: 15px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
 }
 </style>
