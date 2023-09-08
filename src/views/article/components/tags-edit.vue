@@ -25,11 +25,12 @@
 import vDialog from '@/components/dialog/index.vue'
 import { reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
-import { tagAdd } from '@/api/tags'
+import { tagAdd, tagEdit } from '@/api/tags'
 
 const props = defineProps({
   title: String,
   info: Object,
+  type: Number,
   isShow: {
     type: Boolean,
     default: false
@@ -57,12 +58,13 @@ const close = val => {
 }
 
 const open = () => {
-  console.log(props.info)
   if (props.info.name) {
     tagsForm = Object.assign(tagsForm, props.info)
     tagsForm.status = props.info.status ? true : false
   } else {
-    tagsFormRef.value.resetFields()
+    tagsForm.name = ''
+    tagsForm.status = true
+    tagsForm.description = ''
   }
 
 }
@@ -82,16 +84,29 @@ const submit = async (formEl) => {
   await formEl.validate((valid, fields) => {
     if (valid) {
       loading.value = true
-      tagAdd({ ...tagsForm, status: tagsForm.status ? 1 : 0 }).then(res => {
-        ElMessage({
-          message: '操作成功',
-          type: 'success',
+      if (props.type) {
+        tagAdd({ ...tagsForm, status: tagsForm.status ? 1 : 0 }).then(res => {
+          ElMessage({
+            message: res.data.msg,
+            type: 'success',
+          })
+          close(true)
+          formEl.resetFields()
+        }).finally(() => {
+          loading.value = false
         })
-        close(true)
-        formEl.resetFields()
-      }).finally(() => {
-        loading.value = false
-      })
+      } else {
+        tagEdit({ ...tagsForm, status: tagsForm.status ? 1 : 0, id: props.info.id }).then((res) => {
+          ElMessage({
+            message: res.data.msg,
+            type: 'success',
+          })
+          close(true)
+          formEl.resetFields()
+        }).finally(() => {
+          loading.value = false
+        })
+      }
     } else {
       Promise.reject(fields)
     }

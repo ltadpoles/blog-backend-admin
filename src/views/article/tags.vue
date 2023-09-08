@@ -89,7 +89,7 @@
     </div>
 
     <tags-edit :title="editDialogInfo.title" :isShow="editDialogInfo.isShow" :info="editDialogInfo.info"
-      @close="editDialogClose" />
+      :type="editDialogInfo.type" @close="editDialogClose" />
   </div>
 </template>
 
@@ -125,7 +125,8 @@ let multipleSelection = ref([])
 
 let editDialogInfo = reactive({
   title: '新增标签',
-  isShow: false
+  isShow: false,
+  type: 1 // 1:新增 0: 修改
 })
 
 const getTagsList = async query => {
@@ -155,12 +156,14 @@ const currentChange = (page) => {
 const addTags = () => {
   editDialogInfo.isShow = true
   editDialogInfo.title = '新增标签'
+  editDialogInfo.type = 1
   editDialogInfo.info = {}
 }
 
 const editTags = row => {
   editDialogInfo.isShow = true
   editDialogInfo.title = '修改标签'
+  editDialogInfo.type = 0
   editDialogInfo.info = JSON.parse(JSON.stringify(row))
 }
 

@@ -16,3 +16,7 @@ export const tagList = data => {
 export const tagDel = param => {
     return http.get(ENV.TARGETURL + '/tag/del', { param })
 }
+
+export const tagEdit = data => {
+    return http.post(ENV.TARGETURL + '/tag/edit', data)
+}
