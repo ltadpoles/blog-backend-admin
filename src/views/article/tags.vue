@@ -97,7 +97,7 @@
 import { onMounted, reactive, ref } from 'vue'
 import tagsEdit from './components/tags-edit.vue'
 import { ElMessageBox, ElMessage } from 'element-plus'
-import { tagList } from '@/api/tags'
+import { tagList, tagDel } from '@/api/tags'
 import { dayjs } from 'element-plus'
 
 const tagsFormRef = ref(null)
@@ -195,8 +195,14 @@ const batchDel = () => {
       type: 'warning',
     }
   )
-    .then(() => {
-      ElMessage.success('操作成功')
+    .then(async () => {
+      const ids = multipleSelection.value.map(item => item.id).join(',')
+      const { data } = await tagDel({ id: ids })
+      ElMessage({
+        type: 'success',
+        message: data.msg
+      })
+      getTagsList(query)
     })
 }
 
@@ -204,12 +210,13 @@ const selectionChange = val => {
   multipleSelection.value = val
 }
 
-const delConfirm = () => {
-
+const delConfirm = async (val) => {
+  const { data } = await tagDel({ id: val.id })
   ElMessage({
     type: 'success',
-    message: '删除成功',
+    message: data.msg,
   })
+  getTagsList(query)
 }
 
 const enableConfirm = () => {

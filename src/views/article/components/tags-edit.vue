@@ -25,7 +25,7 @@
 import vDialog from '@/components/dialog/index.vue'
 import { reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
-import { tagAdd, tagEdit } from '@/api/tags'
+import { tagAdd, tagUpdate } from '@/api/tags'
 
 const props = defineProps({
   title: String,
@@ -96,7 +96,7 @@ const submit = async (formEl) => {
           loading.value = false
         })
       } else {
-        tagEdit({ ...tagsForm, status: tagsForm.status ? 1 : 0, id: props.info.id }).then((res) => {
+        tagUpdate({ ...tagsForm, status: tagsForm.status ? 1 : 0, id: props.info.id }).then((res) => {
           ElMessage({
             message: res.data.msg,
             type: 'success',

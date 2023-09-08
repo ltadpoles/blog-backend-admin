@@ -13,10 +13,10 @@ export const tagList = data => {
     return http.post(ENV.TARGETURL + '/tag/list', data)
 }
 
-export const tagDel = param => {
-    return http.get(ENV.TARGETURL + '/tag/del', { param })
+export const tagDel = params => {
+    return http.get(ENV.TARGETURL + '/tag/del', { params })
 }
 
-export const tagEdit = data => {
-    return http.post(ENV.TARGETURL + '/tag/edit', data)
+export const tagUpdate = data => {
+    return http.post(ENV.TARGETURL + '/tag/update', data)
 }
