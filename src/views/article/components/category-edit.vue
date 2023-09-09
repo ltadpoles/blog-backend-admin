@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-dialog :title="title" :isShow="isShow" @close="close">
+    <v-dialog :title="title" :isShow="isShow" @close="close" @open="open">
       <el-form ref="categoryFormRef" :model="categoryForm" :rules="rules" label-width="120px" status-icon>
         <el-form-item label="类别名称" prop="name">
           <el-input v-model="categoryForm.name" placeholder="请输入类别名称" maxlength="10" show-word-limit />
@@ -8,12 +8,9 @@
         <el-form-item label="状态" prop="status">
           <el-switch v-model="categoryForm.status" />
         </el-form-item>
-        <el-form-item label="描述" prop="desc">
-          <el-input v-model="categoryForm.desc"
-                    type="textarea"
-                    show-word-limit
-                    placeholder="请输入类别描述"
-                    maxlength="30" />
+        <el-form-item label="描述" prop="description">
+          <el-input v-model="categoryForm.description" type="textarea" show-word-limit placeholder="请输入类别描述"
+            maxlength="30" />
         </el-form-item>
         <el-form-item>
           <el-button @click="cancel(categoryFormRef)">取消</el-button>
@@ -29,10 +26,12 @@
 import vDialog from '@/components/dialog/index.vue'
 import { reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
+import { categoryAdd, categoryUpdate } from '@/api/category';
 
-defineProps({
+const props = defineProps({
   title: String,
-  id: String,
+  info: Object,
+  type: Number,
   isShow: {
     type: Boolean,
     default: false
@@ -67,6 +66,18 @@ const cancel = formEl => {
   close()
 }
 
+const open = () => {
+  if (props.type) {
+    categoryForm.name = ''
+    categoryForm.status = true
+    categoryForm.description = ''
+  } else {
+    categoryForm = Object.assign(categoryForm, props.info)
+    categoryForm.status = props.info.status ? true : false
+  }
+
+}
+
 const submit = async (formEl) => {
   if (!formEl) {
     return
@@ -74,14 +85,29 @@ const submit = async (formEl) => {
   await formEl.validate((valid, fields) => {
     if (valid) {
       loading.value = true
-      setTimeout(() => {
-        ElMessage({
-          message: '操作成功',
-          type: 'success',
+      if (props.type) {
+        categoryAdd({ ...categoryForm, status: categoryForm.status ? 1 : 0 }).then(res => {
+          ElMessage({
+            message: res.data.msg,
+            type: 'success',
+          })
+          close(true)
+          formEl.resetFields()
+        }).finally(() => {
+          loading.value = false
         })
-        loading.value = false
-        close()
-      }, 3000)
+      } else {
+        categoryUpdate({ ...categoryForm, status: categoryForm.status ? 1 : 0, id: props.info.id }).then((res) => {
+          ElMessage({
+            message: res.data.msg,
+            type: 'success',
+          })
+          close(true)
+          formEl.resetFields()
+        }).finally(() => {
+          loading.value = false
+        })
+      }
     } else {
       Promise.reject(fields)
     }

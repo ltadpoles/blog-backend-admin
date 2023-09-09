@@ -129,7 +129,7 @@ let editDialogInfo = reactive({
   type: 1 // 1:新增 0: 修改
 })
 
-const getTagsList = async query => {
+const getList = async query => {
   const { data } = await tagList(query)
   tableData.value = data.data.list
   page.total = data.data.total
@@ -145,12 +145,12 @@ const search = param => {
   query.param = Object.assign(query.param, param, { startTime, endTime })
   query.pageNum = 1
   page.currentPage = 1
-  getTagsList(query)
+  getList(query)
 }
 
 const currentChange = (page) => {
   query.pageNum = page
-  getTagsList(query)
+  getList(query)
 }
 
 const addTags = () => {
@@ -171,7 +171,7 @@ const editDialogClose = val => {
   editDialogInfo.isShow = false
   if (val) {
     query.pageNum = 1
-    getTagsList(query)
+    getList(query)
   }
 }
 
@@ -201,7 +201,7 @@ const batchDel = () => {
         type: 'success',
         message: data.msg
       })
-      getTagsList(query)
+      getList(query)
     })
 }
 
@@ -215,12 +215,12 @@ const delConfirm = async (val) => {
     type: 'success',
     message: data.msg,
   })
-  getTagsList(query)
+  getList(query)
 }
 
 const statusConfirm = async (row) => {
   await tagUpdate({ id: row.id, name: row.name, status: row.status === 1 ? 0 : 1 })
-  getTagsList(query)
+  getList(query)
   ElMessage({
     type: 'success',
     message: '操作成功',
@@ -235,11 +235,11 @@ const onReset = formEl => {
   query.pageNum = 1
   query.param = {}
   page.currentPage = 1
-  getTagsList(query)
+  getList(query)
 }
 
 onMounted(() => {
-  getTagsList(query)
+  getList(query)
 })
 
 </script>

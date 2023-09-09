@@ -58,15 +58,14 @@ const close = val => {
 }
 
 const open = () => {
-  if (props.info.name) {
-    tagsForm = Object.assign(tagsForm, props.info)
-    tagsForm.status = props.info.status ? true : false
-  } else {
+  if (props.type) {
     tagsForm.name = ''
     tagsForm.status = true
     tagsForm.description = ''
+  } else {
+    tagsForm = Object.assign(tagsForm, props.info)
+    tagsForm.status = props.info.status ? true : false
   }
-
 }
 
 const cancel = formEl => {
