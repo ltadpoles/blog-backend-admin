@@ -59,8 +59,8 @@
               </span>
             </template>
           </el-popconfirm>
-          <el-popconfirm confirm-button-text="确认" cancel-button-text="取消" icon="InfoFilled" title="确认启用?"
-            @confirm="enableConfirm(scope.row)">
+          <el-popconfirm v-if="scope.row.status === 0" confirm-button-text="确认" cancel-button-text="取消" icon="InfoFilled"
+            title="确认启用?" @confirm="statusConfirm(scope.row)">
             <template #reference>
               <span>
                 <el-tooltip effect="dark" content="启用" placement="top">
@@ -69,8 +69,8 @@
               </span>
             </template>
           </el-popconfirm>
-          <el-popconfirm confirm-button-text="确认" cancel-button-text="取消" icon="InfoFilled" title="确认禁用?"
-            @confirm="disableConfirm(scope.row)">
+          <el-popconfirm v-if="scope.row.status === 1" confirm-button-text="确认" cancel-button-text="取消" icon="InfoFilled"
+            title="确认禁用?" @confirm="statusConfirm(scope.row)">
             <template #reference>
               <span>
                 <el-tooltip effect="dark" content="禁用" placement="top">
@@ -97,7 +97,7 @@
 import { onMounted, reactive, ref } from 'vue'
 import tagsEdit from './components/tags-edit.vue'
 import { ElMessageBox, ElMessage } from 'element-plus'
-import { tagList, tagDel } from '@/api/tags'
+import { tagList, tagDel, tagUpdate } from '@/api/tags'
 import { dayjs } from 'element-plus'
 
 const tagsFormRef = ref(null)
@@ -219,14 +219,9 @@ const delConfirm = async (val) => {
   getTagsList(query)
 }
 
-const enableConfirm = () => {
-  ElMessage({
-    type: 'success',
-    message: '操作成功',
-  })
-}
-
-const disableConfirm = () => {
+const statusConfirm = async (row) => {
+  await tagUpdate({ id: row.id, name: row.name, status: row.status === 1 ? 0 : 1 })
+  getTagsList(query)
   ElMessage({
     type: 'success',
     message: '操作成功',
