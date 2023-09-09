@@ -3,6 +3,8 @@ import { refresh } from './refresh-token'
 import { useUserStore } from '@/stores/modules/user'
 import { ENV } from '@/config'
 import { ElMessage } from 'element-plus'
+import router from '@/router'
+import { RESETSTORE } from '@/stores/reset'
 
 const http = axios.create()
 
@@ -61,6 +63,8 @@ http.interceptors.response.use(
           message: '登录已过期，请重新登录',
           type: 'error'
         })
+        RESETSTORE()
+        router.replace(ENV.LOGIN_URL)
       }
       break
     case 403:
