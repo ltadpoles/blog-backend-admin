@@ -67,8 +67,12 @@
     </el-table>
 
     <div class="pagination">
-      <el-pagination v-model:current-page="page.currentPage" v-model:page-size="query.pageSize" size="small"
-        layout="total, prev, pager, next" :total="page.total" @current-change="currentChange" />
+      <el-pagination v-model:current-page="page.currentPage"
+                     v-model:page-size="query.pageSize"
+                     size="small"
+                     layout="total, prev, pager, next"
+                     :total="page.total"
+                     @current-change="currentChange" />
     </div>
   </div>
 </template>
@@ -76,7 +80,7 @@
 <script setup>
 import { onMounted, reactive, ref } from 'vue'
 import { userList } from '../../api/user'
-import { dayjs } from 'element-plus';
+import { dayjs } from 'element-plus'
 
 const userFormRef = ref(null)
 

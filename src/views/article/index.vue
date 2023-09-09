@@ -156,7 +156,6 @@ const addArticle = () => {
 const getArticleInfo = row => {
   infoDialogInfo.isShow = true
   infoDialogInfo.title = row.title
-  console.log(row)
 }
 
 const editClose = val => {

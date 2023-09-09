@@ -170,7 +170,6 @@ const editTags = row => {
 const editDialogClose = val => {
   editDialogInfo.isShow = false
   if (val) {
-    console.log(true, 111)
     query.pageNum = 1
     getTagsList(query)
   }
