@@ -9,8 +9,11 @@
           <el-switch v-model="categoryForm.status" />
         </el-form-item>
         <el-form-item label="描述" prop="description">
-          <el-input v-model="categoryForm.description" type="textarea" show-word-limit placeholder="请输入类别描述"
-            maxlength="30" />
+          <el-input v-model="categoryForm.description"
+                    type="textarea"
+                    show-word-limit
+                    placeholder="请输入类别描述"
+                    maxlength="30" />
         </el-form-item>
         <el-form-item>
           <el-button @click="cancel(categoryFormRef)">取消</el-button>
@@ -26,7 +29,7 @@
 import vDialog from '@/components/dialog/index.vue'
 import { reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
-import { categoryAdd, categoryUpdate } from '@/api/category';
+import { categoryAdd, categoryUpdate } from '@/api/category'
 
 const props = defineProps({
   title: String,

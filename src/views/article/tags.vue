@@ -49,8 +49,11 @@
           <el-tooltip effect="dark" content="编辑" placement="top">
             <el-button link type="primary" icon="Edit" @click="editTags(scope.row)" />
           </el-tooltip>
-          <el-popconfirm confirm-button-text="确认" cancel-button-text="取消" icon="InfoFilled" title="确认删除?"
-            @confirm="delConfirm(scope.row)">
+          <el-popconfirm confirm-button-text="确认"
+                         cancel-button-text="取消"
+                         icon="InfoFilled"
+                         title="确认删除?"
+                         @confirm="delConfirm(scope.row)">
             <template #reference>
               <span>
                 <el-tooltip effect="dark" content="删除" placement="top">
@@ -59,8 +62,12 @@
               </span>
             </template>
           </el-popconfirm>
-          <el-popconfirm v-if="scope.row.status === 0" confirm-button-text="确认" cancel-button-text="取消" icon="InfoFilled"
-            title="确认启用?" @confirm="statusConfirm(scope.row)">
+          <el-popconfirm v-if="scope.row.status === 0"
+                         confirm-button-text="确认"
+                         cancel-button-text="取消"
+                         icon="InfoFilled"
+                         title="确认启用?"
+                         @confirm="statusConfirm(scope.row)">
             <template #reference>
               <span>
                 <el-tooltip effect="dark" content="启用" placement="top">
@@ -69,8 +76,12 @@
               </span>
             </template>
           </el-popconfirm>
-          <el-popconfirm v-if="scope.row.status === 1" confirm-button-text="确认" cancel-button-text="取消" icon="InfoFilled"
-            title="确认禁用?" @confirm="statusConfirm(scope.row)">
+          <el-popconfirm v-if="scope.row.status === 1"
+                         confirm-button-text="确认"
+                         cancel-button-text="取消"
+                         icon="InfoFilled"
+                         title="确认禁用?"
+                         @confirm="statusConfirm(scope.row)">
             <template #reference>
               <span>
                 <el-tooltip effect="dark" content="禁用" placement="top">
@@ -84,21 +95,27 @@
     </el-table>
 
     <div class="pagination">
-      <el-pagination v-model:current-page="page.currentPage" v-model:page-size="query.pageSize" size="small"
-        layout="total, prev, pager, next" :total="page.total" @current-change="currentChange" />
+      <el-pagination v-model:current-page="page.currentPage"
+                     v-model:page-size="query.pageSize"
+                     size="small"
+                     layout="total, prev, pager, next"
+                     :total="page.total"
+                     @current-change="currentChange" />
     </div>
 
-    <tags-edit :title="editDialogInfo.title" :isShow="editDialogInfo.isShow" :info="editDialogInfo.info"
-      :type="editDialogInfo.type" @close="editDialogClose" />
+    <tags-edit :title="editDialogInfo.title"
+               :isShow="editDialogInfo.isShow"
+               :info="editDialogInfo.info"
+               :type="editDialogInfo.type"
+               @close="editDialogClose" />
   </div>
 </template>
 
 <script setup>
 import { onMounted, reactive, ref } from 'vue'
 import tagsEdit from './components/tags-edit.vue'
-import { ElMessageBox, ElMessage } from 'element-plus'
+import { ElMessageBox, ElMessage, dayjs } from 'element-plus'
 import { tagList, tagDel, tagUpdate } from '@/api/tags'
-import { dayjs } from 'element-plus'
 
 const tagsFormRef = ref(null)
 
