@@ -10,23 +10,29 @@
           <div class="article-flex margin-b10">
             <div class="article-flex margin-r10">
               <span class="article-item-title">标签：</span>
-              <el-tag class="margin-r10"
-                      closable
-                      type="success"
-                      v-for="item in tags"
-                      :key="item"
-                      @close="tagClose">{{
-                        item
-                      }}</el-tag>
-              <el-button type="success" plain size="small">添加标签</el-button>
+              <el-tag class="margin-r10" closable type="success" v-for="item in tags" :key="item" @close="tagClose">{{
+                item
+              }}</el-tag>
+              <el-tooltip placement="bottom-end" effect="light" trigger="click">
+                <template #content>
+                  <div class="list-sty">
+                    <div class="type-search">
+                      <span class="search-title">标签：</span>
+                      <el-input v-model="tagSearch" placeholder="请输入标签名称" />
+                    </div>
+                    <div class="add-sty">添加标签</div>
+                    <div class="tag-list">
+                      <div class="tag-item">vue</div>
+                    </div>
+                  </div>
+                </template>
+                <el-button type="success" plain size="small">添加标签</el-button>
+              </el-tooltip>
             </div>
             <div class="article-flex">
               <span class="article-item-title">分类：</span>
-              <el-tag class="margin-r10"
-                      closable
-                      v-for="item in categorys"
-                      :key="item"
-                      @close="categoryClose">item</el-tag>
+              <el-tag class="margin-r10" closable v-for="item in categorys" :key="item"
+                @close="categoryClose">item</el-tag>
               <el-button plain size="small">添加分类</el-button>
             </div>
           </div>
@@ -52,7 +58,7 @@
       </div>
 
       <div class="article-editor">
-        <v-md-editor v-model="text" :height="editorHeight" @save="save"/>
+        <v-md-editor v-model="info.text" :height="editorHeight" @save="save" />
       </div>
 
       <div class="article-edit-footer">
@@ -82,12 +88,12 @@ defineProps({
 
 const emit = defineEmits(['close'])
 
-let tags = ref(['vue', 'javaScript'])
-let categorys = ref(['技术研究'])
+let tags = ref()
+let categorys = ref()
+let tagSearch = ref()
+let categorySearch = ref()
 
 let editorHeight = ref('400px')
-
-let text = ref('')
 
 const close = () => {
   emit('close', false)
@@ -161,6 +167,25 @@ onMounted(() => {
   .article-edit-footer {
     text-align: center;
     margin-top: 32px;
+  }
+}
+
+
+.list-sty {
+  padding: 10px 0;
+
+  .add-sty {
+    padding: 10px 0;
+  }
+
+  .type-search {
+    display: flex;
+    align-items: center;
+
+    .search-title {
+      width: 40px;
+      min-width: 40px;
+    }
   }
 }
 </style>

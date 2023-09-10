@@ -112,7 +112,7 @@ const articleFormRef = ref(null)
 const editDialogInfo = reactive({
   isShow: false,
   title: '新增文章',
-  type: '0'
+  type: 1
 })
 
 const infoDialogInfo = reactive({
@@ -128,17 +128,7 @@ let articleForm = reactive({
   date: null
 })
 
-let tableData = ref([{
-  title: '我的第一篇文章',
-  author: 'tadpole',
-  tags: 'vue',
-  category: '技术探讨',
-  type: '1',
-  status: '1',
-  link: '',
-  createTime: '2023-08-02 13:20:39',
-  updateTime: '2023-08-10 20:30:30'
-}])
+let tableData = ref([])
 
 const onReset = formEl => {
   if (!formEl) {
@@ -150,7 +140,7 @@ const onReset = formEl => {
 const addArticle = () => {
   editDialogInfo.isShow = true
   editDialogInfo.title = '新增文章'
-  editDialogInfo.type = '0'
+  editDialogInfo.type = 1
 }
 
 const getArticleInfo = row => {
