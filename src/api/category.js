@@ -19,3 +19,7 @@ export const categoryDel = params => {
 export const categoryUpdate = data => {
   return http.post(ENV.TARGETURL + '/category/update', data)
 }
+
+export const categoryListAll = data => {
+  return http.post(ENV.TARGETURL + '/category/listAll', data)
+}

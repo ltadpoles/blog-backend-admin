@@ -20,3 +20,7 @@ export const tagDel = params => {
 export const tagUpdate = data => {
   return http.post(ENV.TARGETURL + '/tag/update', data)
 }
+
+export const tagListAll = data => {
+  return http.post(ENV.TARGETURL + '/tag/listAll', data)
+}
