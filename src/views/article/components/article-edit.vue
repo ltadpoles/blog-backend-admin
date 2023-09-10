@@ -10,11 +10,11 @@
           <div class="article-flex margin-b10">
             <div class="article-flex margin-r10">
               <span class="article-item-title">标签：</span>
-              <el-tag class="margin-r10" closable type="success" v-for="item in tags" :key="item.id"
+              <el-tag class="margin-r10" closable type="success" v-for="item in info.tags" :key="item.id"
                 @close="tagClose(item)">
                 {{ item.name }}
               </el-tag>
-              <el-tooltip placement="bottom-end" effect="light" trigger="click" v-if="tags.length < 3">
+              <el-tooltip placement="bottom-end" effect="light" trigger="click" v-if="info.tags.length < 3">
                 <template #content>
                   <div class="list-sty">
                     <!-- <div class="type-search">
@@ -35,9 +35,10 @@
             </div>
             <div class="article-flex">
               <span class="article-item-title">分类：</span>
-              <el-tag class="margin-r10" closable v-for="item in categorys" :key="item.id" @close="categoryClose(item)">{{
-                item.name }}</el-tag>
-              <el-tooltip placement="bottom-end" effect="light" trigger="click" v-if="categorys.length < 1">
+              <el-tag class="margin-r10" closable v-for="item in info.categorys" :key="item.id"
+                @close="categoryClose(item)">{{
+                  item.name }}</el-tag>
+              <el-tooltip placement="bottom-end" effect="light" trigger="click" v-if="info.categorys.length < 1">
                 <template #content>
                   <div class="list-sty">
                     <!-- <div class="type-search">
@@ -65,7 +66,7 @@
                 <el-option label="转载" value="2" />
               </el-select>
             </div>
-            <div class="article-flex ">
+            <div class="article-flex" v-if="info.type === '2'">
               <span class="article-item-title">原文链接：</span>
               <el-input v-model="info.link" placeholder="请输入原文链接" clearable />
             </div>
@@ -78,13 +79,13 @@
       </div>
 
       <div class="article-editor">
-        <v-md-editor v-model="info.text" :height="editorHeight" @save="save" />
+        <v-md-editor v-model="info.content" :height="editorHeight" />
       </div>
 
       <div class="article-edit-footer">
-        <el-button>取消</el-button>
+        <el-button @click="close">取消</el-button>
         <el-button type="primary" @click="submit">保存</el-button>
-        <el-button type="primary" @click="publish">发布</el-button>
+        <!-- <el-button type="primary" @click="publish">发布</el-button> -->
       </div>
     </div>
   </v-dialog>
@@ -93,8 +94,10 @@
 import { onMounted, reactive, ref } from 'vue'
 import { tagListAll } from '@/api/tags'
 import { categoryListAll } from '@/api/category'
+import { articleAdd } from '@/api/article'
 import vDialog from '@/components/dialog/index.vue'
 import vUpload from '@/components/upload/index.vue'
+import VueMarkdownEditor, { xss } from '@kangc/v-md-editor';
 
 defineProps({
   title: String,
@@ -110,15 +113,18 @@ defineProps({
 
 const emit = defineEmits(['close'])
 
-let tags = ref([])
 let tagsAll = ref([])
 let categoryAll = ref([])
-let categorys = ref([])
-
 let editorHeight = ref('400px')
 
 const info = reactive({
-  title: ''
+  title: '',
+  tags: [],
+  categorys: [],
+  type: '',
+  link: '',
+  content: '',
+  html: ''
 })
 
 const close = () => {
@@ -130,14 +136,14 @@ const getTagsList = async (param = {}) => {
   tagsAll.value = data.data
 }
 const addTag = item => {
-  const isAdd = tags.value.some(tag => tag.id === item.id)
+  const isAdd = info.tags.some(tag => tag.id === item.id)
   if (!isAdd) {
-    tags.value.push(item)
+    info.tags.push(item)
   }
 }
 const tagClose = (item) => {
-  const index = tags.value.findIndex(tag => tag.id === item.id)
-  tags.value.splice(index, 1)
+  const index = info.tags.findIndex(tag => tag.id === item.id)
+  info.tags.splice(index, 1)
 }
 
 const getCategoryList = async (param = {}) => {
@@ -145,19 +151,62 @@ const getCategoryList = async (param = {}) => {
   categoryAll.value = data.data
 }
 const addCategory = item => {
-  const isAdd = categorys.value.some(category => category.id === item.id)
+  const isAdd = info.categorys.some(category => category.id === item.id)
   if (!isAdd) {
-    categorys.value.push(item)
+    info.categorys.push(item)
   }
 }
 const categoryClose = (item) => {
-  const index = categorys.value.findIndex(category => category.id === item.id)
-  categorys.value.splice(index, 1)
+  const index = info.categorys.findIndex(category => category.id === item.id)
+  info.categorys.splice(index, 1)
 }
 
-const save = (val, html) => { }
-const submit = () => { }
-const publish = () => { }
+const submit = async () => {
+  if (!info.title) {
+    return ElMessage({
+      message: '标题不能为空',
+      type: 'warning',
+    })
+  }
+  if (!info.tags || info.tags.length < 1) {
+    return ElMessage({
+      message: '标签不能为空',
+      type: 'warning',
+    })
+  }
+  if (!info.categorys || info.categorys.length < 1) {
+    return ElMessage({
+      message: '分类不能为空',
+      type: 'warning',
+    })
+  }
+  if (!info.type) {
+    return ElMessage({
+      message: '创作类型不能为空',
+      type: 'warning',
+    })
+  }
+  if (info.type === '2' && !info.link) {
+    return ElMessage({
+      message: '原文链接不能为空',
+      type: 'warning',
+    })
+  }
+  if (!info.content) {
+    return ElMessage({
+      message: '文章内容不能为空',
+      type: 'warning',
+    })
+  }
+  // 获取html
+  info.html = xss.process(VueMarkdownEditor.vMdParser.themeConfig.markdownParser.render(info.content));
+  const { data } = await articleAdd({ ...info, tags: info.tags.map(item => item.id), categorys: info.categorys.map(item => item.id)[0], image: '111' })
+  ElMessage({
+    message: data.msg,
+    type: 'success',
+  })
+}
+// const publish = () => { }
 
 onMounted(() => {
   editorHeight.value = document.documentElement.clientHeight - 320 + 'px'
