@@ -127,8 +127,8 @@ const info = reactive({
   html: ''
 })
 
-const close = () => {
-  emit('close', false)
+const close = (value) => {
+  emit('close', value)
 }
 
 const getTagsList = async (param = {}) => {
@@ -205,6 +205,7 @@ const submit = async () => {
     message: data.msg,
     type: 'success',
   })
+  close(true)
 }
 // const publish = () => { }
 

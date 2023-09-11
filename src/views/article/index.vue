@@ -6,14 +6,12 @@
       </el-form-item>
       <el-form-item label="标签" prop="tags">
         <el-select v-model="articleForm.tags" placeholder="请选择文章标签" clearable multiple>
-          <el-option label="Zone one" value="shanghai" />
-          <el-option label="Zone two" value="beijing" />
+          <el-option v-for="item in tagList" :key="item.id" :label="item.name" :value="item.id" />
         </el-select>
       </el-form-item>
       <el-form-item label="分类" prop="category">
-        <el-select v-model="articleForm.category" placeholder="请选择文章标签" clearable multiple>
-          <el-option label="Zone one" value="shanghai" />
-          <el-option label="Zone two" value="beijing" />
+        <el-select v-model="articleForm.category" placeholder="请选择文章分类" clearable>
+          <el-option v-for="item in categoryList" :key="item.id" :label="item.name" :value="item.id" />
         </el-select>
       </el-form-item>
       <el-form-item label="创作类型" prop="type">
@@ -23,14 +21,14 @@
           <el-option label="转载" value="2" />
         </el-select>
       </el-form-item>
-      <el-form-item label="发布状态" prop="status">
+      <!-- <el-form-item label="发布状态" prop="status">
         <el-select v-model="articleForm.status" placeholder="请选择发布状态" clearable>
           <el-option label="全部" value="" />
           <el-option label="已发布" value="1" />
           <el-option label="未发布" value="2" />
           <el-option label="已下架" value="3" />
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="创建时间" prop="date">
         <el-date-picker v-model="articleForm.date" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" />
       </el-form-item>
@@ -52,31 +50,39 @@
           <el-button link type="primary" size="small" @click="getArticleInfo(scope.row)">{{ scope.row.title }}</el-button>
         </template>
       </el-table-column>
-      <el-table-column prop="author" label="作者" />
+      <el-table-column prop="createUserName" label="作者" />
       <el-table-column prop="tags" label="标签" align="center">
         <template #default="scope">
-          <el-tag type="success" v-for="item in scope.row.tags.split(',')" :key="item">{{ item }}</el-tag>
+          <el-tag class="tag-item" type="success" v-for="item in scope.row.tag" :key="item.id">{{ item.name }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column prop="category" label="分类">
         <template #default="scope">
-          <el-tag v-for="item in scope.row.category.split(',')" :key="item">{{ item }}</el-tag>
+          <el-tag v-for="item in scope.row.category" :key="item.id">{{ item.name }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column prop="type" label="创作类型">
         <template #default="scope">
-          {{ scope.row.type === '1' ? '原创' : '转载' }}
+          {{ scope.row.type === 1 ? '原创' : '转载' }}
         </template>
       </el-table-column>
-      <el-table-column prop="status" label="发布状态">
+      <!-- <el-table-column prop="status" label="发布状态">
         <template #default="scope">
           {{ scope.row.status === '1' ? '已发布' : '未发布' }}
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column prop="link" label="原文链接" />
-      <el-table-column prop="createTime" label="创建时间" />
-      <el-table-column prop="updateTime" label="更新时间" />
-      <el-table-column label="操作" width="180" align="center">
+      <el-table-column prop="createTime" label="创建时间">
+        <template #default="scope">
+          {{ dayjs(scope.row.createTime).format('YYYY-MM-DD HH:mm') }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="updateTime" label="更新时间">
+        <template #default="scope">
+          {{ dayjs(scope.row.updateTime).format('YYYY-MM-DD HH:mm') }}
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" width="120" align="center">
         <template #default>
           <el-tooltip effect="dark" content="编辑" placement="top">
             <el-button link type="primary" icon="Edit" />
@@ -87,12 +93,12 @@
           <el-tooltip effect="dark" content="删除" placement="top">
             <el-button link type="danger" icon="Delete" />
           </el-tooltip>
-          <el-tooltip effect="dark" content="发布" placement="top">
+          <!-- <el-tooltip effect="dark" content="发布" placement="top">
             <el-button link type="primary" icon="View" />
           </el-tooltip>
           <el-tooltip effect="dark" content="下架" placement="top">
             <el-button link type="danger" icon="SwitchButton" />
-          </el-tooltip>
+          </el-tooltip> -->
         </template>
       </el-table-column>
     </el-table>
@@ -103,9 +109,13 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
+import { dayjs } from 'element-plus'
+import { onMounted, reactive, ref } from 'vue'
+import { articleList } from '@/api/article'
 import editDialog from './components/article-edit.vue'
 import infoDialog from './components/article-info.vue'
+import { tagListAll } from '../../api/tags'
+import { categoryListAll } from '../../api/category'
 
 const articleFormRef = ref(null)
 
@@ -122,13 +132,36 @@ const infoDialogInfo = reactive({
 let articleForm = reactive({
   name: '',
   tags: [],
-  category: [],
+  category: '',
   type: '',
-  status: '',
   date: null
 })
 
 let tableData = ref([])
+let tagList = ref([])
+let categoryList = ref([])
+let query = reactive({
+  pageSize: 10,
+  pageNum: 1,
+  param: {}
+})
+let page = reactive({
+  currentPage: 1,
+  total: 0
+})
+const getList = async query => {
+  const { data } = await articleList(query)
+  tableData.value = data.data.list
+  page.total = data.data.total
+}
+const getTagList = async () => {
+  const { data } = await tagListAll()
+  tagList.value = data.data
+}
+const getCategoryList = async () => {
+  const { data } = await categoryListAll()
+  categoryList.value = data.data
+}
 
 const onReset = formEl => {
   if (!formEl) {
@@ -149,17 +182,29 @@ const getArticleInfo = row => {
 }
 
 const editClose = val => {
-  editDialogInfo.isShow = val
+  editDialogInfo.isShow = false
+  if (val) {
+    getList(query)
+  }
 }
 
 const infoClose = val => {
   infoDialogInfo.isShow = val
 }
 
+onMounted(() => {
+  getList(query)
+  getTagList()
+  getCategoryList()
+})
 </script>
 
 <style lang="less" scoped>
 .btn-list {
   margin-bottom: 15px;
+}
+
+.tag-item {
+  margin-right: 5px;
 }
 </style>
