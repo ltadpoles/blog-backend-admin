@@ -205,9 +205,21 @@ const submit = async () => {
     message: data.msg,
     type: 'success',
   })
+  infoReset()
   close(true)
 }
 // const publish = () => { }
+
+const infoReset = () => {
+  info.title = ''
+  info.tags = []
+  info.categorys = ''
+  info.type = ''
+  info.link = ''
+  info.content = ''
+  info.html = ''
+  info.image = ''
+}
 
 onMounted(() => {
   editorHeight.value = document.documentElement.clientHeight - 320 + 'px'

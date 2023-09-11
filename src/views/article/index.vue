@@ -1,8 +1,8 @@
 <template>
   <div class="article">
     <el-form ref="articleFormRef" :inline="true" :model="articleForm">
-      <el-form-item label="标题" prop="name">
-        <el-input v-model="articleForm.name" placeholder="请输入标题" clearable />
+      <el-form-item label="标题" prop="title">
+        <el-input v-model="articleForm.title" placeholder="请输入标题" clearable />
       </el-form-item>
       <el-form-item label="标签" prop="tags">
         <el-select v-model="articleForm.tags" placeholder="请选择文章标签" clearable multiple>
@@ -30,10 +30,10 @@
         </el-select>
       </el-form-item> -->
       <el-form-item label="创建时间" prop="date">
-        <el-date-picker v-model="articleForm.date" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" />
+        <el-date-picker v-model="articleForm.date" type="datetimerange" start-placeholder="开始日期" end-placeholder="结束日期" />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="Search">搜索</el-button>
+        <el-button type="primary" icon="Search" @click="search(articleForm)">搜索</el-button>
         <el-button icon="Refresh" @click="onReset(articleFormRef)">重置</el-button>
       </el-form-item>
     </el-form>
@@ -79,7 +79,7 @@
       </el-table-column>
       <el-table-column prop="updateTime" label="更新时间">
         <template #default="scope">
-          {{ dayjs(scope.row.updateTime).format('YYYY-MM-DD HH:mm') }}
+          {{ scope.row.updateTime ? dayjs(scope.row.updateTime).format('YYYY-MM-DD HH:mm') : '' }}
         </template>
       </el-table-column>
       <el-table-column label="操作" width="120" align="center">
@@ -162,12 +162,28 @@ const getCategoryList = async () => {
   const { data } = await categoryListAll()
   categoryList.value = data.data
 }
+const search = (param) => {
+  page.currentPage = 1
+  query.pageNum = 1
+  let startTime = ''
+  let endTime = ''
+  if (param.date && param.date.length) {
+    startTime = new Date(param.date[0]).getTime()
+    endTime = new Date(param.date[1]).getTime()
+  }
+  query.param = Object.assign(query.param, param, { startTime, endTime })
+  getList(query)
+}
 
 const onReset = formEl => {
   if (!formEl) {
     return
   }
   formEl.resetFields()
+  query.pageNum = 1
+  query.param = {}
+  page.currentPage = 1
+  getList(query)
 }
 
 const addArticle = () => {
