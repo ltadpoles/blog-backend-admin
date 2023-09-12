@@ -20,3 +20,7 @@ export const articleDel = params => {
 export const articleUpdate = data => {
     return http.post(ENV.TARGETURL + '/article/update', data)
 }
+
+export const articleInfo = params => {
+    return http.get(ENV.TARGETURL + '/article/info', { params })
+}

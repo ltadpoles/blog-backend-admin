@@ -1,5 +1,5 @@
 <template>
-  <v-dialog :isShow="isShow" :title="title" @close="close" fullscreen>
+  <v-dialog :isShow="isShow" :title="title" @close="close" @open="open" fullscreen>
     <div class="article-edit">
       <div class="article-edit-head">
         <div class="article-edit-head-left">
@@ -62,11 +62,11 @@
             <div class="article-flex margin-r10">
               <span class="article-item-title">创作类型：</span>
               <el-select v-model="info.type" clearable placeholder="请选择创作类型">
-                <el-option label="原创" value="1" />
-                <el-option label="转载" value="2" />
+                <el-option label="原创" :value="1" />
+                <el-option label="转载" :value="2" />
               </el-select>
             </div>
-            <div class="article-flex" v-if="info.type === '2'">
+            <div class="article-flex" v-if="info.type === 2">
               <span class="article-item-title">原文链接：</span>
               <el-input v-model="info.link" placeholder="请输入原文链接" clearable />
             </div>
@@ -94,21 +94,22 @@
 import { onMounted, reactive, ref } from 'vue'
 import { tagListAll } from '@/api/tags'
 import { categoryListAll } from '@/api/category'
-import { articleAdd } from '@/api/article'
+import { articleAdd, articleInfo, articleUpdate } from '@/api/article'
 import vDialog from '@/components/dialog/index.vue'
 import vUpload from '@/components/upload/index.vue'
 import VueMarkdownEditor, { xss } from '@kangc/v-md-editor';
 
-defineProps({
+const props = defineProps({
   title: String,
+  id: Number,
   isShow: {
     type: Boolean,
     default: false
   },
   type: {
-    type: String,
-    default: '0'
-  }
+    type: Number,
+    default: 0
+  },
 })
 
 const emit = defineEmits(['close'])
@@ -117,7 +118,7 @@ let tagsAll = ref([])
 let categoryAll = ref([])
 let editorHeight = ref('400px')
 
-const info = reactive({
+let info = reactive({
   title: '',
   tags: [],
   categorys: [],
@@ -145,12 +146,25 @@ const tagClose = (item) => {
   const index = info.tags.findIndex(tag => tag.id === item.id)
   info.tags.splice(index, 1)
 }
+const open = () => {
+  infoReset()
+  if (props.id) {
+    getInfo(props.id)
+  }
+}
 
+const getInfo = async id => {
+  const { data } = await articleInfo({ id })
+  info = Object.assign(info, data.data)
+  info.categorys = data.data.category
+  info.tags = data.data.tag
+}
 const getCategoryList = async (param = {}) => {
   const { data } = await categoryListAll(param)
   categoryAll.value = data.data
 }
 const addCategory = item => {
+  console.log(info)
   const isAdd = info.categorys.some(category => category.id === item.id)
   if (!isAdd) {
     info.categorys.push(item)
@@ -161,7 +175,7 @@ const categoryClose = (item) => {
   info.categorys.splice(index, 1)
 }
 
-const submit = async () => {
+const validate = () => {
   if (!info.title) {
     return ElMessage({
       message: '标题不能为空',
@@ -198,14 +212,28 @@ const submit = async () => {
       type: 'warning',
     })
   }
+  return false
+}
+const submit = async () => {
+  if (validate()) {
+    return false
+  }
   // 获取html
   info.html = xss.process(VueMarkdownEditor.vMdParser.themeConfig.markdownParser.render(info.content));
-  const { data } = await articleAdd({ ...info, tags: info.tags.map(item => item.id), categorys: info.categorys.map(item => item.id)[0], image: '111' })
-  ElMessage({
-    message: data.msg,
-    type: 'success',
-  })
-  infoReset()
+
+  if (props.id) {
+    const { data } = await articleUpdate({ ...info, tags: info.tags.map(item => item.id), categorys: info.categorys.map(item => item.id)[0], image: '111', id: props.id })
+    ElMessage({
+      message: data.msg,
+      type: 'success',
+    })
+  } else {
+    const { data } = await articleAdd({ ...info, tags: info.tags.map(item => item.id), categorys: info.categorys.map(item => item.id)[0], image: '111' })
+    ElMessage({
+      message: data.msg,
+      type: 'success',
+    })
+  }
   close(true)
 }
 // const publish = () => { }
@@ -213,7 +241,7 @@ const submit = async () => {
 const infoReset = () => {
   info.title = ''
   info.tags = []
-  info.categorys = ''
+  info.categorys = []
   info.type = ''
   info.link = ''
   info.content = ''

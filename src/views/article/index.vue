@@ -83,9 +83,9 @@
         </template>
       </el-table-column>
       <el-table-column label="操作" width="120" align="center">
-        <template #default>
+        <template #default="scope">
           <el-tooltip effect="dark" content="编辑" placement="top">
-            <el-button link type="primary" icon="Edit" />
+            <el-button link type="primary" icon="Edit" @click="edit(scope.row)" />
           </el-tooltip>
           <el-tooltip effect="dark" content="置顶" placement="top">
             <el-button link type="primary" icon="Upload" />
@@ -104,7 +104,8 @@
     </el-table>
 
     <info-dialog :isShow="infoDialogInfo.isShow" :title="infoDialogInfo.title" @close="infoClose" />
-    <edit-dialog :isShow="editDialogInfo.isShow" :title="editDialogInfo.title" @close="editClose" />
+    <edit-dialog :isShow="editDialogInfo.isShow" :title="editDialogInfo.title" :type="editDialogInfo.type"
+      :id="editDialogInfo.id" @close="editClose" />
   </div>
 </template>
 
@@ -190,11 +191,18 @@ const addArticle = () => {
   editDialogInfo.isShow = true
   editDialogInfo.title = '新增文章'
   editDialogInfo.type = 1
+  editDialogInfo.id = null
 }
 
 const getArticleInfo = row => {
   infoDialogInfo.isShow = true
   infoDialogInfo.title = row.title
+}
+const edit = row => {
+  editDialogInfo.isShow = true
+  editDialogInfo.title = '编辑文章'
+  editDialogInfo.type = 0
+  editDialogInfo.id = row.id
 }
 
 const editClose = val => {
