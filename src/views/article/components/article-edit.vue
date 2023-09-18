@@ -164,7 +164,6 @@ const getCategoryList = async (param = {}) => {
   categoryAll.value = data.data
 }
 const addCategory = item => {
-  console.log(info)
   const isAdd = info.categorys.some(category => category.id === item.id)
   if (!isAdd) {
     info.categorys.push(item)

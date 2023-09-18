@@ -103,7 +103,8 @@
       </el-table-column>
     </el-table>
 
-    <info-dialog :isShow="infoDialogInfo.isShow" :title="infoDialogInfo.title" @close="infoClose" />
+    <info-dialog :isShow="infoDialogInfo.isShow" :title="infoDialogInfo.title" :id="infoDialogInfo.id"
+      @close="infoClose" />
     <edit-dialog :isShow="editDialogInfo.isShow" :title="editDialogInfo.title" :type="editDialogInfo.type"
       :id="editDialogInfo.id" @close="editClose" />
   </div>
@@ -197,6 +198,7 @@ const addArticle = () => {
 const getArticleInfo = row => {
   infoDialogInfo.isShow = true
   infoDialogInfo.title = row.title
+  infoDialogInfo.id = row.id
 }
 const edit = row => {
   editDialogInfo.isShow = true
