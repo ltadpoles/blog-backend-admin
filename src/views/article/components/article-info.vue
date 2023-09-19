@@ -12,7 +12,7 @@
       </div>
 
       <div class="editor-content">
-        <v-md-editor v-model="info.html" mode="preview" default-show-toc :include-level="[1, 2, 3, 4]" />
+        <v-md-editor v-model="info.content" mode="preview" default-show-toc :include-level="[1, 2, 3, 4]" />
       </div>
 
     </div>
@@ -41,7 +41,6 @@ let info = reactive({
   createTime: '',
   createUser: '',
   createUserName: '',
-  html: '',
   id: '',
   image: '',
   like: '',

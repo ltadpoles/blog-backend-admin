@@ -125,7 +125,6 @@ let info = reactive({
   type: '',
   link: '',
   content: '',
-  html: ''
 })
 
 const close = (value) => {
@@ -217,9 +216,6 @@ const submit = async () => {
   if (validate()) {
     return false
   }
-  // 获取html
-  info.html = xss.process(VueMarkdownEditor.vMdParser.themeConfig.markdownParser.render(info.content));
-
   if (props.id) {
     const { data } = await articleUpdate({ ...info, tags: info.tags.map(item => item.id), categorys: info.categorys.map(item => item.id)[0], image: '111', id: props.id })
     ElMessage({
@@ -244,7 +240,6 @@ const infoReset = () => {
   info.type = ''
   info.link = ''
   info.content = ''
-  info.html = ''
   info.image = ''
 }
 
