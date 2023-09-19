@@ -103,10 +103,15 @@
       </el-table-column>
     </el-table>
 
-    <info-dialog :isShow="infoDialogInfo.isShow" :title="infoDialogInfo.title" :id="infoDialogInfo.id"
-      @close="infoClose" />
-    <edit-dialog :isShow="editDialogInfo.isShow" :title="editDialogInfo.title" :type="editDialogInfo.type"
-      :id="editDialogInfo.id" @close="editClose" />
+    <info-dialog :isShow="infoDialogInfo.isShow"
+                 :title="infoDialogInfo.title"
+                 :id="infoDialogInfo.id"
+                 @close="infoClose" />
+    <edit-dialog :isShow="editDialogInfo.isShow"
+                 :title="editDialogInfo.title"
+                 :type="editDialogInfo.type"
+                 :id="editDialogInfo.id"
+                 @close="editClose" />
   </div>
 </template>
 

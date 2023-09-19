@@ -26,6 +26,7 @@ import vDialog from '@/components/dialog/index.vue'
 import { reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { tagAdd, tagUpdate } from '@/api/tags'
+import { resetData } from '@/utils'
 
 const props = defineProps({
   title: String,
@@ -59,9 +60,8 @@ const close = val => {
 
 const open = () => {
   if (props.type) {
-    tagsForm.name = ''
+    resetData(tagsForm)
     tagsForm.status = true
-    tagsForm.description = ''
   } else {
     tagsForm = Object.assign(tagsForm, props.info)
     tagsForm.status = props.info.status ? true : false

@@ -22,8 +22,9 @@
 <script setup>
 import { articleInfo } from '@/api/article'
 import vDialog from '@/components/dialog/index.vue'
-import { dayjs } from 'element-plus';
+import { dayjs } from 'element-plus'
 import { reactive } from 'vue'
+import { resetData } from '@/utils'
 
 const props = defineProps({
   isShow: {
@@ -65,18 +66,8 @@ const close = () => {
 }
 const open = () => {
   resetData(info)
-  console.log(info)
   getInfo(props.id)
 }
-
-const resetData = (data) => {
-  const keys = Object.keys(data)
-  let obj = {}
-  keys.forEach((item) => {
-    obj[item] = (typeof obj[item]) === 'object' ? (Array.isArray(obj[item]) ? [] : {}) : ''
-  })
-  Object.assign(data, obj)
-};
 
 </script>
 

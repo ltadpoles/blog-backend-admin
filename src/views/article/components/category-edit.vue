@@ -30,6 +30,7 @@ import vDialog from '@/components/dialog/index.vue'
 import { reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { categoryAdd, categoryUpdate } from '@/api/category'
+import { resetData } from '@/utils'
 
 const props = defineProps({
   title: String,
@@ -71,14 +72,12 @@ const cancel = formEl => {
 
 const open = () => {
   if (props.type) {
-    categoryForm.name = ''
+    resetData(categoryForm)
     categoryForm.status = true
-    categoryForm.description = ''
   } else {
     categoryForm = Object.assign(categoryForm, props.info)
     categoryForm.status = props.info.status ? true : false
   }
-
 }
 
 const submit = async (formEl) => {

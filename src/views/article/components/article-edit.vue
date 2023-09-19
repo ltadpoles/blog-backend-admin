@@ -10,8 +10,12 @@
           <div class="article-flex margin-b10">
             <div class="article-flex margin-r10">
               <span class="article-item-title">标签：</span>
-              <el-tag class="margin-r10" closable type="success" v-for="item in info.tags" :key="item.id"
-                @close="tagClose(item)">
+              <el-tag class="margin-r10"
+                      closable
+                      type="success"
+                      v-for="item in info.tags"
+                      :key="item.id"
+                      @close="tagClose(item)">
                 {{ item.name }}
               </el-tag>
               <el-tooltip placement="bottom-end" effect="light" trigger="click" v-if="info.tags.length < 3">
@@ -23,8 +27,11 @@
                     </div> -->
                     <div class="add-sty">添加标签：</div>
                     <div class="tag-list">
-                      <el-tag class="tag-item" type="success" @click="addTag(item)" v-for="item in tagsAll"
-                        :key="item.id">
+                      <el-tag class="tag-item"
+                              type="success"
+                              @click="addTag(item)"
+                              v-for="item in tagsAll"
+                              :key="item.id">
                         {{ item.name }}
                       </el-tag>
                     </div>
@@ -35,9 +42,12 @@
             </div>
             <div class="article-flex">
               <span class="article-item-title">分类：</span>
-              <el-tag class="margin-r10" closable v-for="item in info.categorys" :key="item.id"
-                @close="categoryClose(item)">{{
-                  item.name }}</el-tag>
+              <el-tag class="margin-r10"
+                      closable
+                      v-for="item in info.categorys"
+                      :key="item.id"
+                      @close="categoryClose(item)">{{
+                        item.name }}</el-tag>
               <el-tooltip placement="bottom-end" effect="light" trigger="click" v-if="info.categorys.length < 1">
                 <template #content>
                   <div class="list-sty">
@@ -97,7 +107,8 @@ import { categoryListAll } from '@/api/category'
 import { articleAdd, articleInfo, articleUpdate } from '@/api/article'
 import vDialog from '@/components/dialog/index.vue'
 import vUpload from '@/components/upload/index.vue'
-import VueMarkdownEditor, { xss } from '@kangc/v-md-editor';
+import { resetData } from '@/utils'
+import { ElMessage } from 'element-plus'
 
 const props = defineProps({
   title: String,
@@ -146,7 +157,7 @@ const tagClose = (item) => {
   info.tags.splice(index, 1)
 }
 const open = () => {
-  infoReset()
+  resetData(info)
   if (props.id) {
     getInfo(props.id)
   }
@@ -232,16 +243,6 @@ const submit = async () => {
   close(true)
 }
 // const publish = () => { }
-
-const infoReset = () => {
-  info.title = ''
-  info.tags = []
-  info.categorys = []
-  info.type = ''
-  info.link = ''
-  info.content = ''
-  info.image = ''
-}
 
 onMounted(() => {
   editorHeight.value = document.documentElement.clientHeight - 320 + 'px'

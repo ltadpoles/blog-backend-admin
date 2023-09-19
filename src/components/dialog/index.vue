@@ -1,7 +1,17 @@
 <template>
-  <el-dialog v-model="dialogVisible" :title="title" :width="width" :fullscreen="fullscreen" :modal="modal"
-    :close-on-click-modal="closeOnClickModal" :close-on-press-escape="closeOnPressEscape" :show-close="showClose"
-    :before-close="beforeClose" center :destroy-on-close="true" @close="close" @open="open">
+  <el-dialog v-model="dialogVisible"
+             :title="title"
+             :width="width"
+             :fullscreen="fullscreen"
+             :modal="modal"
+             :close-on-click-modal="closeOnClickModal"
+             :close-on-press-escape="closeOnPressEscape"
+             :show-close="showClose"
+             :before-close="beforeClose"
+             center
+             :destroy-on-close="true"
+             @close="close"
+             @open="open">
     <slot></slot>
   </el-dialog>
 </template>
