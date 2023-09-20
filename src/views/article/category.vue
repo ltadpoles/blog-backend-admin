@@ -12,10 +12,8 @@
         </el-select>
       </el-form-item>
       <el-form-item label="创建时间" prop="date">
-        <el-date-picker v-model="categoryForm.date"
-                        type="datetimerange"
-                        start-placeholder="开始日期"
-                        end-placeholder="结束日期" />
+        <el-date-picker v-model="categoryForm.date" type="datetimerange" start-placeholder="开始日期"
+          end-placeholder="结束日期" />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="Search" @click="search(categoryForm)">搜索</el-button>
@@ -47,16 +45,13 @@
           {{ scope.row.updateTime ? dayjs(scope.row.updateTime).format('YYYY-MM-DD HH:mm') : '' }}
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="160" align="center">
+      <el-table-column label="操作" width="160" class-name="table-btn">
         <template #default="scope">
           <el-tooltip effect="dark" content="编辑" placement="top">
             <el-button link type="primary" icon="Edit" @click="editCategory(scope.row)" />
           </el-tooltip>
-          <el-popconfirm confirm-button-text="确认"
-                         cancel-button-text="取消"
-                         icon="InfoFilled"
-                         title="确认删除?"
-                         @confirm="delConfirm(scope.row)">
+          <el-popconfirm confirm-button-text="确认" cancel-button-text="取消" icon="InfoFilled" title="确认删除?"
+            @confirm="delConfirm(scope.row)">
             <template #reference>
               <span>
                 <el-tooltip effect="dark" content="删除" placement="top">
@@ -65,12 +60,8 @@
               </span>
             </template>
           </el-popconfirm>
-          <el-popconfirm v-if="scope.row.status === 0"
-                         confirm-button-text="确认"
-                         cancel-button-text="取消"
-                         icon="InfoFilled"
-                         title="确认启用?"
-                         @confirm="statusConfirm(scope.row)">
+          <el-popconfirm v-if="scope.row.status === 0" confirm-button-text="确认" cancel-button-text="取消" icon="InfoFilled"
+            title="确认启用?" @confirm="statusConfirm(scope.row)">
             <template #reference>
               <span>
                 <el-tooltip effect="dark" content="启用" placement="top">
@@ -79,12 +70,8 @@
               </span>
             </template>
           </el-popconfirm>
-          <el-popconfirm v-if="scope.row.status === 1"
-                         confirm-button-text="确认"
-                         cancel-button-text="取消"
-                         icon="InfoFilled"
-                         title="确认禁用?"
-                         @confirm="statusConfirm(scope.row)">
+          <el-popconfirm v-if="scope.row.status === 1" confirm-button-text="确认" cancel-button-text="取消" icon="InfoFilled"
+            title="确认禁用?" @confirm="statusConfirm(scope.row)">
             <template #reference>
               <span>
                 <el-tooltip effect="dark" content="禁用" placement="top">
@@ -98,19 +85,12 @@
     </el-table>
 
     <div class="pagination">
-      <el-pagination v-model:current-page="page.currentPage"
-                     v-model:page-size="query.pageSize"
-                     size="small"
-                     layout="total, prev, pager, next"
-                     :total="page.total"
-                     @current-change="currentChange" />
+      <el-pagination v-model:current-page="page.currentPage" v-model:page-size="query.pageSize" size="small"
+        layout="total, prev, pager, next" :total="page.total" @current-change="currentChange" />
     </div>
 
-    <edit-dialog :isShow="editDialogInfo.isShow"
-                 :title="editDialogInfo.title"
-                 :info="editDialogInfo.info"
-                 :type="editDialogInfo.type"
-                 @close="editDialogClose" />
+    <edit-dialog :isShow="editDialogInfo.isShow" :title="editDialogInfo.title" :info="editDialogInfo.info"
+      :type="editDialogInfo.type" @close="editDialogClose" />
   </div>
 </template>
 

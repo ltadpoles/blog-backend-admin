@@ -82,7 +82,7 @@
           {{ scope.row.updateTime ? dayjs(scope.row.updateTime).format('YYYY-MM-DD HH:mm') : '' }}
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="120" align="center">
+      <el-table-column label="操作" width="120" class-name="table-btn">
         <template #default="scope">
           <el-tooltip effect="dark" content="编辑" placement="top">
             <el-button link type="primary" icon="Edit" @click="edit(scope.row)" />
@@ -90,9 +90,19 @@
           <el-tooltip effect="dark" content="置顶" placement="top">
             <el-button link type="primary" icon="Upload" />
           </el-tooltip>
-          <el-tooltip effect="dark" content="删除" placement="top">
+          <!-- <el-tooltip effect="dark" content="删除" placement="top">
             <el-button link type="danger" icon="Delete" />
-          </el-tooltip>
+          </el-tooltip> -->
+          <el-popconfirm confirm-button-text="确认" cancel-button-text="取消" icon="InfoFilled" title="确认删除?"
+            @confirm="delConfirm(scope.row)">
+            <template #reference>
+              <span>
+                <el-tooltip effect="dark" content="删除" placement="top">
+                  <el-button link type="danger" icon="Delete" />
+                </el-tooltip>
+              </span>
+            </template>
+          </el-popconfirm>
           <!-- <el-tooltip effect="dark" content="发布" placement="top">
             <el-button link type="primary" icon="View" />
           </el-tooltip>
@@ -103,22 +113,17 @@
       </el-table-column>
     </el-table>
 
-    <info-dialog :isShow="infoDialogInfo.isShow"
-                 :title="infoDialogInfo.title"
-                 :id="infoDialogInfo.id"
-                 @close="infoClose" />
-    <edit-dialog :isShow="editDialogInfo.isShow"
-                 :title="editDialogInfo.title"
-                 :type="editDialogInfo.type"
-                 :id="editDialogInfo.id"
-                 @close="editClose" />
+    <info-dialog :isShow="infoDialogInfo.isShow" :title="infoDialogInfo.title" :id="infoDialogInfo.id"
+      @close="infoClose" />
+    <edit-dialog :isShow="editDialogInfo.isShow" :title="editDialogInfo.title" :type="editDialogInfo.type"
+      :id="editDialogInfo.id" @close="editClose" />
   </div>
 </template>
 
 <script setup>
 import { dayjs } from 'element-plus'
 import { onMounted, reactive, ref } from 'vue'
-import { articleList } from '@/api/article'
+import { articleList, articleDel } from '@/api/article'
 import editDialog from './components/article-edit.vue'
 import infoDialog from './components/article-info.vue'
 import { tagListAll } from '../../api/tags'
@@ -221,6 +226,15 @@ const editClose = val => {
 
 const infoClose = val => {
   infoDialogInfo.isShow = val
+}
+
+const delConfirm = async row => {
+  const { data } = await articleDel({ id: row.id })
+  ElMessage({
+    type: 'success',
+    message: data.msg,
+  })
+  getList(query)
 }
 
 onMounted(() => {
