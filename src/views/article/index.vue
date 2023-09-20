@@ -40,10 +40,10 @@
 
     <div class="btn-list">
       <el-button icon="CirclePlus" type="primary" @click="addArticle">新增</el-button>
-      <el-button icon="Delete" type="danger">批量删除</el-button>
+      <el-button icon="Delete" type="danger" @click="delAll">批量删除</el-button>
     </div>
 
-    <el-table :data="tableData" border>
+    <el-table :data="tableData" border @selection-change="selectionChange">
       <el-table-column type="selection" width="55" />
       <el-table-column prop="title" label="标题">
         <template #default="scope">
@@ -121,7 +121,7 @@
 </template>
 
 <script setup>
-import { dayjs } from 'element-plus'
+import { dayjs, ElMessageBox } from 'element-plus'
 import { onMounted, reactive, ref } from 'vue'
 import { articleList, articleDel } from '@/api/article'
 import editDialog from './components/article-edit.vue'
@@ -130,6 +130,8 @@ import { tagListAll } from '../../api/tags'
 import { categoryListAll } from '../../api/category'
 
 const articleFormRef = ref(null)
+
+let multipleSelection = ref([])
 
 const editDialogInfo = reactive({
   isShow: false,
@@ -163,6 +165,11 @@ let page = reactive({
 })
 const getList = async query => {
   const { data } = await articleList(query)
+  data.data.list.forEach(item => {
+    if (item.link) {
+      item.link = decodeURIComponent(item.link)
+    }
+  })
   tableData.value = data.data.list
   page.total = data.data.total
 }
@@ -228,13 +235,39 @@ const infoClose = val => {
   infoDialogInfo.isShow = val
 }
 
+const selectionChange = val => {
+  multipleSelection.value = val
+}
 const delConfirm = async row => {
+
   const { data } = await articleDel({ id: row.id })
   ElMessage({
     type: 'success',
     message: data.msg,
   })
   getList(query)
+}
+const delAll = () => {
+  if (multipleSelection.value.length < 1) {
+    return ElMessage({
+      type: 'warning',
+      message: '请选择需要删除的文章',
+    })
+  }
+  const ids = multipleSelection.value.map(item => item.id).join()
+  ElMessageBox.confirm(
+    '确认删除选中文章?',
+    '提示',
+    {
+      confirmButtonText: '确认',
+      cancelButtonText: '取消',
+      type: 'warning',
+    }
+  )
+    .then(() => {
+      delConfirm({ id: ids })
+    })
+
 }
 
 onMounted(() => {

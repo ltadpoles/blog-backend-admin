@@ -48,11 +48,9 @@ let info = reactive({
   link: '',
   operator: '',
   operatorName: '',
-  publishTime: '',
   status: '',
   tag: [],
   type: '',
-  updateTime: ''
 })
 
 const getInfo = async id => {
