@@ -87,12 +87,26 @@
           <el-tooltip effect="dark" content="编辑" placement="top">
             <el-button link type="primary" icon="Edit" @click="edit(scope.row)" />
           </el-tooltip>
-          <el-tooltip effect="dark" content="置顶" placement="top">
-            <el-button link type="primary" icon="Upload" />
-          </el-tooltip>
-          <!-- <el-tooltip effect="dark" content="删除" placement="top">
-            <el-button link type="danger" icon="Delete" />
-          </el-tooltip> -->
+          <el-popconfirm v-if="scope.row.top === 2" confirm-button-text="确认" cancel-button-text="取消" icon="InfoFilled"
+            title="确认置顶?" @confirm="delConfirm(scope.row)">
+            <template #reference>
+              <span>
+                <el-tooltip effect="dark" content="置顶" placement="top">
+                  <el-button link type="primary" icon="Top" />
+                </el-tooltip>
+              </span>
+            </template>
+          </el-popconfirm>
+          <el-popconfirm v-if="scope.row.top === 1" confirm-button-text="确认" cancel-button-text="取消" icon="InfoFilled"
+            title="确认取消置顶?" @confirm="delConfirm(scope.row)">
+            <template #reference>
+              <span>
+                <el-tooltip effect="dark" content="取消置顶" placement="top">
+                  <el-button link type="primary" icon="Bottom" />
+                </el-tooltip>
+              </span>
+            </template>
+          </el-popconfirm>
           <el-popconfirm confirm-button-text="确认" cancel-button-text="取消" icon="InfoFilled" title="确认删除?"
             @confirm="delConfirm(scope.row)">
             <template #reference>
