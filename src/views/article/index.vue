@@ -50,18 +50,18 @@
           <el-button link type="primary" size="small" @click="getArticleInfo(scope.row)">{{ scope.row.title }}</el-button>
         </template>
       </el-table-column>
-      <el-table-column prop="createUserName" label="作者" />
-      <el-table-column prop="tags" label="标签" align="center">
+      <el-table-column prop="createUserName" label="作者" align="center" />
+      <el-table-column prop="tags" label="标签" min-width="120px" class-name="tag-class">
         <template #default="scope">
           <el-tag class="tag-item" type="success" v-for="item in scope.row.tag" :key="item.id">{{ item.name }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="category" label="分类">
+      <el-table-column prop="category" label="分类" align="center">
         <template #default="scope">
           <el-tag v-for="item in scope.row.category" :key="item.id">{{ item.name }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="type" label="创作类型">
+      <el-table-column prop="type" label="创作类型" align="center">
         <template #default="scope">
           {{ scope.row.type === 1 ? '原创' : '转载' }}
         </template>
@@ -72,12 +72,12 @@
         </template>
       </el-table-column> -->
       <el-table-column prop="link" label="原文链接" />
-      <el-table-column prop="createTime" label="创建时间">
+      <el-table-column prop="createTime" label="创建时间" min-width="96px" align="center">
         <template #default="scope">
           {{ dayjs(scope.row.createTime).format('YYYY-MM-DD HH:mm') }}
         </template>
       </el-table-column>
-      <el-table-column prop="updateTime" label="更新时间">
+      <el-table-column prop="updateTime" label="更新时间" min-width="96px" align="center">
         <template #default="scope">
           {{ scope.row.updateTime ? dayjs(scope.row.updateTime).format('YYYY-MM-DD HH:mm') : '' }}
         </template>
@@ -298,5 +298,15 @@ onMounted(() => {
 
 .tag-item {
   margin-right: 5px;
+}
+</style>
+
+<style lang="less">
+.tag-class {
+  .cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }
 </style>
