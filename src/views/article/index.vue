@@ -88,7 +88,7 @@
             <el-button link type="primary" icon="Edit" @click="edit(scope.row)" />
           </el-tooltip>
           <el-popconfirm v-if="scope.row.top === 2" confirm-button-text="确认" cancel-button-text="取消" icon="InfoFilled"
-            title="确认置顶?" @confirm="delConfirm(scope.row)">
+            title="确认置顶?" @confirm="topConfirm(scope.row)">
             <template #reference>
               <span>
                 <el-tooltip effect="dark" content="置顶" placement="top">
@@ -98,7 +98,7 @@
             </template>
           </el-popconfirm>
           <el-popconfirm v-if="scope.row.top === 1" confirm-button-text="确认" cancel-button-text="取消" icon="InfoFilled"
-            title="确认取消置顶?" @confirm="delConfirm(scope.row)">
+            title="确认取消置顶?" @confirm="topConfirm(scope.row)">
             <template #reference>
               <span>
                 <el-tooltip effect="dark" content="取消置顶" placement="top">
@@ -248,6 +248,8 @@ const editClose = val => {
 const infoClose = val => {
   infoDialogInfo.isShow = val
 }
+
+const topConfirm = () => { }
 
 const selectionChange = val => {
   multipleSelection.value = val
