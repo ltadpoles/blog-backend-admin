@@ -6,12 +6,12 @@
       </el-form-item>
       <el-form-item label="标签" prop="tags">
         <el-select v-model="articleForm.tags" placeholder="请选择文章标签" clearable multiple>
-          <el-option v-for="item in tagList" :key="item.id" :label="item.name" :value="item.id" />
+          <el-option v-for="item in tagListAll" :key="item.id" :label="item.name" :value="item.id" />
         </el-select>
       </el-form-item>
       <el-form-item label="分类" prop="category">
         <el-select v-model="articleForm.category" placeholder="请选择文章分类" clearable>
-          <el-option v-for="item in categoryList" :key="item.id" :label="item.name" :value="item.id" />
+          <el-option v-for="item in categoryListAll" :key="item.id" :label="item.name" :value="item.id" />
         </el-select>
       </el-form-item>
       <el-form-item label="创作类型" prop="type">
@@ -87,12 +87,8 @@
           <el-tooltip effect="dark" content="编辑" placement="top">
             <el-button link type="primary" icon="Edit" @click="edit(scope.row)" />
           </el-tooltip>
-          <el-popconfirm v-if="scope.row.top === 2"
-                         confirm-button-text="确认"
-                         cancel-button-text="取消"
-                         icon="InfoFilled"
-                         title="确认置顶?"
-                         @confirm="topConfirm(scope.row)">
+          <el-popconfirm v-if="scope.row.top === 2" confirm-button-text="确认" cancel-button-text="取消" icon="InfoFilled"
+            title="确认置顶?" @confirm="topConfirm(scope.row)">
             <template #reference>
               <span>
                 <el-tooltip effect="dark" content="置顶" placement="top">
@@ -101,12 +97,8 @@
               </span>
             </template>
           </el-popconfirm>
-          <el-popconfirm v-if="scope.row.top === 1"
-                         confirm-button-text="确认"
-                         cancel-button-text="取消"
-                         icon="InfoFilled"
-                         title="确认取消置顶?"
-                         @confirm="topConfirm(scope.row)">
+          <el-popconfirm v-if="scope.row.top === 1" confirm-button-text="确认" cancel-button-text="取消" icon="InfoFilled"
+            title="确认取消置顶?" @confirm="topConfirm(scope.row)">
             <template #reference>
               <span>
                 <el-tooltip effect="dark" content="取消置顶" placement="top">
@@ -115,11 +107,8 @@
               </span>
             </template>
           </el-popconfirm>
-          <el-popconfirm confirm-button-text="确认"
-                         cancel-button-text="取消"
-                         icon="InfoFilled"
-                         title="确认删除?"
-                         @confirm="delConfirm(scope.row)">
+          <el-popconfirm confirm-button-text="确认" cancel-button-text="取消" icon="InfoFilled" title="确认删除?"
+            @confirm="delConfirm(scope.row)">
             <template #reference>
               <span>
                 <el-tooltip effect="dark" content="删除" placement="top">
@@ -138,15 +127,10 @@
       </el-table-column>
     </el-table>
 
-    <info-dialog :isShow="infoDialogInfo.isShow"
-                 :title="infoDialogInfo.title"
-                 :id="infoDialogInfo.id"
-                 @close="infoClose" />
-    <edit-dialog :isShow="editDialogInfo.isShow"
-                 :title="editDialogInfo.title"
-                 :type="editDialogInfo.type"
-                 :id="editDialogInfo.id"
-                 @close="editClose" />
+    <info-dialog :isShow="infoDialogInfo.isShow" :title="infoDialogInfo.title" :id="infoDialogInfo.id"
+      @close="infoClose" />
+    <edit-dialog :isShow="editDialogInfo.isShow" :title="editDialogInfo.title" :type="editDialogInfo.type"
+      :id="editDialogInfo.id" @close="editClose" />
   </div>
 </template>
 
@@ -154,10 +138,10 @@
 import { dayjs, ElMessageBox, ElMessage } from 'element-plus'
 import { onMounted, reactive, ref } from 'vue'
 import { articleList, articleDel } from '@/api/article'
+import { categoryList } from '@/api/category'
+import { tagList } from '@/api/tags'
 import editDialog from './components/article-edit.vue'
 import infoDialog from './components/article-info.vue'
-import { tagListAll } from '../../api/tags'
-import { categoryListAll } from '../../api/category'
 
 const articleFormRef = ref(null)
 
@@ -182,8 +166,8 @@ let articleForm = reactive({
 })
 
 let tableData = ref([])
-let tagList = ref([])
-let categoryList = ref([])
+let tagListAll = ref([])
+let categoryListAll = ref([])
 let query = reactive({
   pageSize: 10,
   pageNum: 1,
@@ -204,12 +188,12 @@ const getList = async query => {
   page.total = data.data.total
 }
 const getTagList = async () => {
-  const { data } = await tagListAll()
-  tagList.value = data.data
+  const { data } = await tagList({ pageSize: 200, pageNum: 1, param: { status: '1' } })
+  tagListAll.value = data.data.list
 }
 const getCategoryList = async () => {
-  const { data } = await categoryListAll()
-  categoryList.value = data.data
+  const { data } = await categoryList({ pageSize: 200, pageNum: 1, param: { status: '1' } })
+  categoryListAll.value = data.data.list
 }
 const search = (param) => {
   page.currentPage = 1

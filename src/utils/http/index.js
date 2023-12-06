@@ -33,14 +33,15 @@ http.interceptors.request.use(
 // 添加响应拦截器
 http.interceptors.response.use(
   function (response) {
+    console.log(response)
     // 2xx 范围内的状态码都会触发该函数。
     // 对响应数据做点什么
-    if (response.data.code !== '0') {
+    if (!response.data || response.data.code !== '0') {
       ElMessage({
-        message: response.data.msg,
+        message: response.data.msg ? response.data.msg : '系统异常！',
         type: 'error'
       })
-      return Promise.reject(response.data.msg)
+      return Promise.reject(response.data.msg ? response.data.msg : '系统异常！')
     }
     return response
 
@@ -49,47 +50,47 @@ http.interceptors.response.use(
     // 超出 2xx 范围的状态码都会触发该函数。
     // 对响应错误做点什么
     switch (error.response.status) {
-    case 400:
-      ElMessage({
-        message: error.response.data.error_description,
-        type: 'error'
-      })
-      break
-    case 401:
-      if (ENV.ISREFRESHTOKEN) {
-        refresh(http, error.response.config)
-      } else {
+      case 400:
         ElMessage({
-          message: '登录已过期，请重新登录',
+          message: error.response.data.error_description,
           type: 'error'
         })
-        RESETSTORE()
-        router.replace(ENV.LOGIN_URL)
-      }
-      break
-    case 403:
-      ElMessage({
-        message: '您没有相关权限',
-        type: 'error'
-      })
-      break
-    case 404:
-      ElMessage({
-        message: '请求链接不存在',
-        type: 'error'
-      })
-      break
-    case 500:
-      ElMessage({
-        message: '服务器错误，请稍后再试',
-        type: 'error'
-      })
-      break
-    default:
-      ElMessage({
-        message: '系统异常，请稍后再试',
-        type: 'error'
-      })
+        break
+      case 401:
+        if (ENV.ISREFRESHTOKEN) {
+          refresh(http, error.response.config)
+        } else {
+          ElMessage({
+            message: '登录已过期，请重新登录',
+            type: 'error'
+          })
+          RESETSTORE()
+          router.replace(ENV.LOGIN_URL)
+        }
+        break
+      case 403:
+        ElMessage({
+          message: '您没有相关权限',
+          type: 'error'
+        })
+        break
+      case 404:
+        ElMessage({
+          message: '请求链接不存在',
+          type: 'error'
+        })
+        break
+      case 500:
+        ElMessage({
+          message: '服务器错误，请稍后再试',
+          type: 'error'
+        })
+        break
+      default:
+        ElMessage({
+          message: '系统异常，请稍后再试',
+          type: 'error'
+        })
     }
 
     return Promise.reject(error)

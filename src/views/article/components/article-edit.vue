@@ -10,12 +10,8 @@
           <div class="article-flex margin-b10">
             <div class="article-flex margin-r10">
               <span class="article-item-title">标签：</span>
-              <el-tag class="margin-r10"
-                      closable
-                      type="success"
-                      v-for="item in info.tags"
-                      :key="item.id"
-                      @close="tagClose(item)">
+              <el-tag class="margin-r10" closable type="success" v-for="item in info.tags" :key="item.id"
+                @close="tagClose(item)">
                 {{ item.name }}
               </el-tag>
               <el-tooltip placement="bottom-end" effect="light" trigger="click" v-if="info.tags.length < 3">
@@ -27,11 +23,8 @@
                     </div> -->
                     <div class="add-sty">添加标签：</div>
                     <div class="tag-list">
-                      <el-tag class="tag-item"
-                              type="success"
-                              @click="addTag(item)"
-                              v-for="item in tagsAll"
-                              :key="item.id">
+                      <el-tag class="tag-item" type="success" @click="addTag(item)" v-for="item in tagsAll"
+                        :key="item.id">
                         {{ item.name }}
                       </el-tag>
                     </div>
@@ -42,12 +35,9 @@
             </div>
             <div class="article-flex">
               <span class="article-item-title">分类：</span>
-              <el-tag class="margin-r10"
-                      closable
-                      v-for="item in info.categorys"
-                      :key="item.id"
-                      @close="categoryClose(item)">{{
-                        item.name }}</el-tag>
+              <el-tag class="margin-r10" closable v-for="item in info.categorys" :key="item.id"
+                @close="categoryClose(item)">{{
+                  item.name }}</el-tag>
               <el-tooltip placement="bottom-end" effect="light" trigger="click" v-if="info.categorys.length < 1">
                 <template #content>
                   <div class="list-sty">
@@ -101,9 +91,9 @@
   </v-dialog>
 </template>
 <script setup>
-import { onMounted, reactive, ref } from 'vue'
-import { tagListAll } from '@/api/tags'
-import { categoryListAll } from '@/api/category'
+import { reactive, ref } from 'vue'
+import { tagList } from '@/api/tags'
+import { categoryList } from '@/api/category'
 import { articleAdd, articleInfo, articleUpdate } from '@/api/article'
 import vDialog from '@/components/dialog/index.vue'
 import vUpload from '@/components/upload/index.vue'
@@ -142,9 +132,9 @@ const close = (value) => {
   emit('close', value)
 }
 
-const getTagsList = async (param = {}) => {
-  const { data } = await tagListAll(param)
-  tagsAll.value = data.data
+const getTagsList = async () => {
+  const { data } = await tagList({ pageSize: 200, pageNum: 1, param: { status: '1' } })
+  tagsAll.value = data.data.list
 }
 const addTag = item => {
   const isAdd = info.tags.some(tag => tag.id === item.id)
@@ -157,6 +147,10 @@ const tagClose = (item) => {
   info.tags.splice(index, 1)
 }
 const open = () => {
+  editorHeight.value = document.documentElement.clientHeight - 320 + 'px'
+  getTagsList()
+  getCategoryList()
+
   resetData(info)
   if (props.id) {
     getInfo(props.id)
@@ -169,9 +163,9 @@ const getInfo = async id => {
   info.categorys = data.data.category
   info.tags = data.data.tag
 }
-const getCategoryList = async (param = {}) => {
-  const { data } = await categoryListAll(param)
-  categoryAll.value = data.data
+const getCategoryList = async () => {
+  const { data } = await categoryList({ pageSize: 200, pageNum: 1, param: { status: '1' } })
+  categoryAll.value = data.data.list
 }
 const addCategory = item => {
   const isAdd = info.categorys.some(category => category.id === item.id)
@@ -247,11 +241,6 @@ const submit = async () => {
 }
 // const publish = () => { }
 
-onMounted(() => {
-  editorHeight.value = document.documentElement.clientHeight - 320 + 'px'
-  getTagsList()
-  getCategoryList()
-})
 </script>
 <style lang="less" scoped>
 .article-edit {
