@@ -15,3 +15,11 @@ export const ENV = {
   // 代理地址
   TARGETURL: '/v1'
 }
+
+/**
+ * @description 业务常量设置
+ */
+export const CONFIG = {
+  MODE: import.meta.VITE_MODE,
+  PROXY_URL: import.meta.VITE_PROXY_URL,
+}

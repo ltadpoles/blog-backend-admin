@@ -6,8 +6,8 @@
 
 <script setup>
 import { ArrowRight } from '@element-plus/icons-vue'
-import { watch, ref } from 'vue'
-
+import { watch, ref, toRaw } from 'vue'
+import { deepClone } from '@/utils'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
@@ -17,7 +17,7 @@ const breadCrumbList = ref([])
 watch(
   () => route.path,
   () => {
-    let arr = JSON.parse(JSON.stringify(route.matched))
+    let arr = deepClone(toRaw(route.matched))
     let index = arr.findIndex(item => !item.meta.title)
 
     if (index > -1) {
